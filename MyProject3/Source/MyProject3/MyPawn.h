@@ -44,9 +44,14 @@ public:
 		UStaticMeshComponent* StaticMeshComp;
 
 	UPROPERTY(EditAnywhere)
-	float Speed = 200.0f;
+		float Speed = 200.0f;
 	UPROPERTY(EditAnywhere)
-	float camSpeed = 10.0f;
+		float camSpeed = 200.0f;
+	UPROPERTY(EditAnywhere)
+		float camAngleMax = 50.0f;
+	UPROPERTY(EditAnywhere)
+		float camAngleMin = -89.0f;
+
 
 
 	//Input functions
@@ -60,6 +65,7 @@ public:
 	//Input variables
 	FVector CurrentVelocity;
 	FRotator CamVelocity;
+	bool onGround;
 
 
 };

@@ -8,6 +8,7 @@ Ashoot::Ashoot()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	//Camera = World->GetFirstPlayerController()->PlayerCameraManager
 
 }
 
@@ -22,10 +23,11 @@ void Ashoot::BeginPlay()
 void Ashoot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	shoot();
 }
 
 void Ashoot::shoot() {
+	
 	FHitResult OutHit;
 	FVector Start = GetActorLocation() + FVector(0, 0, 50);
 

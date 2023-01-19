@@ -62,7 +62,7 @@ void AMyPawn::Tick(float DeltaTime)
 	//Rotate our camera's pitch, but limit it so we're always looking downward
 	{
 		FRotator NewRotation = CameraSpringArm->GetComponentRotation();
-		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CamVelocity.Pitch, -80.0f, -15.0f);
+		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CamVelocity.Pitch, -120.0f, 0.0f);
 		CameraSpringArm->SetWorldRotation(NewRotation);
 	}
 

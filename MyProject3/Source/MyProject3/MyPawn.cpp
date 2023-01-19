@@ -50,19 +50,7 @@ void AMyPawn::Tick(float DeltaTime)
 		SetActorLocation(NewLocation);
 	}
 
-	FHitResult OutHit;
-	FVector Start = GetActorLocation() + FVector(0,0,50)+ GetActorForwardVector()*300;
 
-	FVector ForwardVector = GetActorForwardVector();
-	FVector End = ((ForwardVector * 500.f) + Start);
-	FCollisionQueryParams CollisionParams;
-
-	DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 5);
-
-	if (ActorLineTraceSingle(OutHit, Start, End, ECC_WorldStatic, CollisionParams))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("The Component Being Hit is: %s"), *OutHit.GetComponent()->GetName()));
-	}
 
 
 	//Rotate our actor's yaw, which will turn our camera because we're attached to it

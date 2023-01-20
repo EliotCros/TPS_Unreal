@@ -36,14 +36,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	void shoot();
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UCameraComponent* CameraRay;
-
-	void setcam(UCameraComponent* camera);
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int alacon = 0;
 	
 
-	FVector camLocation;
-	FVector camForward;
+
 
 };

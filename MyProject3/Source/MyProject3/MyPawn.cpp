@@ -44,7 +44,9 @@ void AMyPawn::Tick(float DeltaTime)
 {
 
 	Super::Tick(DeltaTime);
-	shootComp->setcam(OurCamera);
+
+	Startplayer = GetActorLocation();
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, this->GetActorLocation().ToString());
 
 	if (!CurrentVelocity.IsZero()){
 		FVector NewLocation = (new FVector())->Zero();
@@ -68,15 +70,10 @@ void AMyPawn::Tick(float DeltaTime)
 		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CamVelocity.Pitch, camAngleMin, camAngleMax);
 		CameraSpringArm->SetWorldRotation(NewRotation);
 		float p = NewRotation.Pitch;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(p));
 
 	}
 
-
-
-
-
-
+	shoot();
 
 }
 
@@ -117,4 +114,25 @@ void AMyPawn::Cam_YawAxis(float AxisValue) {
 	CamVelocity.Yaw = FMath::Clamp(AxisValue, -1.0f, 1.0f) * camSpeed;
 }
 
+void AMyPawn::shoot(){
+	FCollisionQueryParams CollisionParams;
 
+	 Startcam = OurCamera->GetComponentLocation();
+	 ForwardVectorCam = OurCamera->GetForwardVector();
+	 EndCam = (ForwardVectorCam * 1000000.0f);
+	 ForwardVectorPlayer = GetActorForwardVector();
+
+
+
+
+	if (ActorLineTraceSingle(camhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams))
+	{
+		EndPlayer = camhit.Location;
+	}
+	if (ActorLineTraceSingle(Playerhit, Startplayer, EndPlayer, ECC_WorldStatic, CollisionParams))
+	{
+	}
+
+	DrawDebugLine(GetWorld(), Startplayer, EndPlayer, FColor::Green, false, 1, 0, 1);
+
+}

@@ -11,6 +11,8 @@
 //#include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/GameEngine.h"
+#include<iostream>
+#include<limits>
 #include "MyPawn.generated.h"
 
 UCLASS()
@@ -28,6 +30,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+
+	void shoot();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -69,6 +73,15 @@ public:
 	FVector CurrentVelocity;
 	FRotator CamVelocity;
 	bool onGround;
+	FHitResult camhit;
+	FVector Startcam ;
+	FVector ForwardVectorCam;
+	FVector EndCam;
 
+
+	FHitResult Playerhit;
+	FVector ForwardVectorPlayer ;
+	FVector Startplayer ;
+	FVector EndPlayer ;
 
 };

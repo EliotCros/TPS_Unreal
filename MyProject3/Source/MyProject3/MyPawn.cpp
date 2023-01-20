@@ -3,6 +3,15 @@
 #include "MyPawn.h"
 
 
+/*
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat());
+
+
+*/
+
+
+
 // Sets default values
 AMyPawn::AMyPawn()
 {
@@ -16,10 +25,13 @@ AMyPawn::AMyPawn()
 	StaticMeshComp = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-	shootComp = CreateDefaultSubobject<Ashoot>(TEXT("ShootComponent"));
+	//shootComp = CreateDefaultSubobject<Ashoot>(TEXT("ShootComponent"));
+	groundDetector = CreateDefaultSubobject<UBoxComponent>(TEXT("GroundComponent"));
 
 	StaticMeshComp->SetupAttachment(RootComponent);
 	CameraSpringArm->SetupAttachment(StaticMeshComp);
+	groundDetector->SetupAttachment(StaticMeshComp);
+
 	OurCamera->SetupAttachment(CameraSpringArm, USpringArmComponent::SocketName);
 
 	//Setting Default Variables and Behavior of the SpringArmComponent
@@ -27,6 +39,10 @@ AMyPawn::AMyPawn()
 	CameraSpringArm->TargetArmLength = 400.f;
 	CameraSpringArm->bEnableCameraLag = true;
 	CameraSpringArm->CameraLagSpeed = 3.0f;
+
+
+
+	groundDetector->SetGenerateOverlapEvents(true);
 
 	
 
@@ -37,6 +53,9 @@ void AMyPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	StaticMeshComp->SetSimulatePhysics(true);
+
+	groundDetector->OnComponentBeginOverlap.AddDynamic(this, &AMyPawn::isGround);
+
 }
 
 // Called every frame
@@ -44,7 +63,7 @@ void AMyPawn::Tick(float DeltaTime)
 {
 
 	Super::Tick(DeltaTime);
-	shootComp->setcam(OurCamera);
+	//shootComp->setcam(OurCamera);
 
 	if (!CurrentVelocity.IsZero()){
 		FVector NewLocation = (new FVector())->Zero();
@@ -68,13 +87,9 @@ void AMyPawn::Tick(float DeltaTime)
 		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CamVelocity.Pitch, camAngleMin, camAngleMax);
 		CameraSpringArm->SetWorldRotation(NewRotation);
 		float p = NewRotation.Pitch;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(p));
-
 	}
-
-
-
-
+	
+	
 
 
 
@@ -92,8 +107,16 @@ void AMyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("rotateY", this, &AMyPawn::Cam_PitchAxis);
 
 
+}
+
+void AMyPawn::isGround(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	onGround = true;
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("bla"));
 
 }
+
+
+#pragma region Movement
 
 void AMyPawn::Move_XAxis(float AxisValue) {
 	// Move at 100 units per second forward or backward
@@ -118,3 +141,4 @@ void AMyPawn::Cam_YawAxis(float AxisValue) {
 }
 
 
+#pragma endregion Movement

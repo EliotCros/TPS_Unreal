@@ -11,7 +11,9 @@
 //#include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/GameEngine.h"
+#include "Components/BoxComponent.h"
 #include "MyPawn.generated.h"
+
 
 UCLASS()
 class MYPROJECT3_API AMyPawn : public APawn
@@ -42,7 +44,11 @@ public:
 		class UCameraComponent* OurCamera;
 
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* StaticMeshComp;
+		class UStaticMeshComponent* StaticMeshComp;
+
+	UPROPERTY(EditAnywhere)
+		class UBoxComponent* groundDetector;
+
 
 	UPROPERTY(EditAnywhere)
 		Ashoot* shootComp;
@@ -64,6 +70,9 @@ public:
 	//Input Cam
 	void Cam_PitchAxis(float AxisValue);
 	void Cam_YawAxis(float AxisValue);
+
+	void isGround(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 
 	//Input variables
 	FVector CurrentVelocity;

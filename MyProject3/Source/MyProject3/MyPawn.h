@@ -45,15 +45,10 @@ public:
 		UStaticMeshComponent* StaticMeshComp;
 
 	UPROPERTY(EditAnywhere)
-<<<<<<< HEAD
 		Ashoot* shootComp;
 	UPROPERTY(EditAnywhere)
 		float Speed = 200.0f;
 	UPROPERTY(EditAnywhere)
-=======
-		float Speed = 200.0f;
-	UPROPERTY(EditAnywhere)
->>>>>>> b3691a7e43cde5ec5ee1b8f3eda5f37f43476cb0
 		float camSpeed = 200.0f;
 	UPROPERTY(EditAnywhere)
 		float camAngleMax = 50.0f;

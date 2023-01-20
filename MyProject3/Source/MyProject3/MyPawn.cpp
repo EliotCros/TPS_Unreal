@@ -44,11 +44,8 @@ void AMyPawn::Tick(float DeltaTime)
 {
 
 	Super::Tick(DeltaTime);
-<<<<<<< HEAD
 	shootComp->setcam(OurCamera);
 
-=======
->>>>>>> b3691a7e43cde5ec5ee1b8f3eda5f37f43476cb0
 	if (!CurrentVelocity.IsZero()){
 		FVector NewLocation = (new FVector())->Zero();
 		

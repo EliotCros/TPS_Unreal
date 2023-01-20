@@ -35,33 +35,39 @@ AMyPawn::AMyPawn()
 void AMyPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	StaticMeshComp->SetSimulatePhysics(true);
 }
 
 // Called every frame
 void AMyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, GetActorForwardVector().ToString());
 	if (!CurrentVelocity.IsZero()){
-		FVector NewLocation = GetActorLocation();
-		NewLocation += GetActorForwardVector() * (CurrentVelocity.X * DeltaTime);
-		NewLocation += GetActorRightVector() * (CurrentVelocity.Y * DeltaTime);
-		SetActorLocation(NewLocation);
+		FVector NewLocation = (new FVector())->Zero();
+		
+		NewLocation += StaticMeshComp->GetForwardVector() * (CurrentVelocity.X * DeltaTime);
+		NewLocation += StaticMeshComp->GetRightVector() * (CurrentVelocity.Y * DeltaTime);
+		StaticMeshComp->AddRelativeLocation(NewLocation);
 	}
+
+
 
 
 	//Rotate our actor's yaw, which will turn our camera because we're attached to it
 	{
-		FRotator NewRotation = GetActorRotation();
-		NewRotation.Yaw += CamVelocity.Yaw;
-		SetActorRotation(NewRotation);
+		FRotator rot = (new FRotator())->ZeroRotator;
+		rot.Yaw = CamVelocity.Yaw;
+
+		StaticMeshComp->AddRelativeRotation(rot);
 	}
 	//Rotate our camera's pitch, but limit it so we're always looking downward
 	{
 		FRotator NewRotation = CameraSpringArm->GetComponentRotation();
-		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CamVelocity.Pitch, -80.0f, -15.0f);
+		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CamVelocity.Pitch, camAngleMin, camAngleMax);
 		CameraSpringArm->SetWorldRotation(NewRotation);
+		float p = NewRotation.Pitch;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(p));
+
 	}
 
 

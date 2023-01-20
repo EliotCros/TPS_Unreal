@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "shoot.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/SpringArmComponent.h"
@@ -43,6 +44,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComp;
 
+	UPROPERTY(EditAnywhere)
+		Ashoot* shootComp;
 	UPROPERTY(EditAnywhere)
 		float Speed = 200.0f;
 	UPROPERTY(EditAnywhere)

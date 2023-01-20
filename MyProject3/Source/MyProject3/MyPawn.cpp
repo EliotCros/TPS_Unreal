@@ -1,8 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Fill out your copyright notice in the Description page of Project Setting
 
 #include "MyPawn.h"
-
 
 
 // Sets default values
@@ -18,6 +16,7 @@ AMyPawn::AMyPawn()
 	StaticMeshComp = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	shootComp = CreateDefaultSubobject<Ashoot>(TEXT("ShootComponent"));
 
 	StaticMeshComp->SetupAttachment(RootComponent);
 	CameraSpringArm->SetupAttachment(StaticMeshComp);
@@ -28,6 +27,8 @@ AMyPawn::AMyPawn()
 	CameraSpringArm->TargetArmLength = 400.f;
 	CameraSpringArm->bEnableCameraLag = true;
 	CameraSpringArm->CameraLagSpeed = 3.0f;
+
+	
 
 }
 
@@ -41,7 +42,10 @@ void AMyPawn::BeginPlay()
 // Called every frame
 void AMyPawn::Tick(float DeltaTime)
 {
+
 	Super::Tick(DeltaTime);
+	shootComp->setcam(OurCamera);
+
 	if (!CurrentVelocity.IsZero()){
 		FVector NewLocation = (new FVector())->Zero();
 		
@@ -49,8 +53,6 @@ void AMyPawn::Tick(float DeltaTime)
 		NewLocation += StaticMeshComp->GetRightVector() * (CurrentVelocity.Y * DeltaTime);
 		StaticMeshComp->AddRelativeLocation(NewLocation);
 	}
-
-
 
 
 	//Rotate our actor's yaw, which will turn our camera because we're attached to it

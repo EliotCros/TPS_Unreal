@@ -41,7 +41,7 @@ public:
 
 	void setcam(UCameraComponent* camera);
 
-	
+	int alacon = 0;
 
 	FVector camLocation;
 	FVector camForward;

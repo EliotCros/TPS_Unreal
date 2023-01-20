@@ -27,7 +27,11 @@ void Ashoot::Tick(float DeltaTime)
 {
 
 	Super::Tick(DeltaTime);
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT(alacon));
+
 	if (CameraRay == nullptr) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("le seum"));
 	}
 	shoot();
 }
@@ -59,7 +63,7 @@ void Ashoot::shoot() {
 }
 
 void Ashoot::setcam(UCameraComponent* camera) {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("le seum"));
+	alacon = 1;
 	CameraRay = camera;
 }
 

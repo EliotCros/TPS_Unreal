@@ -140,8 +140,10 @@ void APlayerCharacter::shoot() {
 	}
 	if (ActorLineTraceSingle(Playerhit, Startplayer, EndPlayer, ECC_WorldStatic, CollisionParams))
 	{
+
 		try
 		{
+
 			ATarget* target = Cast<ATarget>(Playerhit.GetActor());
 			target->killTarget();
 		}

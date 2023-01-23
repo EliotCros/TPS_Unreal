@@ -34,8 +34,16 @@ void ATarget::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATarget::killTarget()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, this->GetActorLocation().ToString());
 
+	try
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("test"));
+
+	}
+	catch (const std::exception&)
+	{
+
+	}
 	//Destroy();
 }
 

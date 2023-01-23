@@ -1,8 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Fill out your copyright notice in the Description page of Project Setting
 
 #include "MyPawn.h"
-
 
 
 // Sets default values
@@ -18,6 +16,7 @@ AMyPawn::AMyPawn()
 	StaticMeshComp = CreateDefaultSubobject <UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	shootComp = CreateDefaultSubobject<Ashoot>(TEXT("ShootComponent"));
 
 	StaticMeshComp->SetupAttachment(RootComponent);
 	CameraSpringArm->SetupAttachment(StaticMeshComp);
@@ -28,6 +27,8 @@ AMyPawn::AMyPawn()
 	CameraSpringArm->TargetArmLength = 400.f;
 	CameraSpringArm->bEnableCameraLag = true;
 	CameraSpringArm->CameraLagSpeed = 3.0f;
+
+	
 
 }
 
@@ -41,7 +42,12 @@ void AMyPawn::BeginPlay()
 // Called every frame
 void AMyPawn::Tick(float DeltaTime)
 {
+
 	Super::Tick(DeltaTime);
+
+	Startplayer = GetActorLocation();
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, this->GetActorLocation().ToString());
+
 	if (!CurrentVelocity.IsZero()){
 		FVector NewLocation = (new FVector())->Zero();
 		
@@ -49,8 +55,6 @@ void AMyPawn::Tick(float DeltaTime)
 		NewLocation += StaticMeshComp->GetRightVector() * (CurrentVelocity.Y * DeltaTime);
 		StaticMeshComp->AddRelativeLocation(NewLocation);
 	}
-
-
 
 
 	//Rotate our actor's yaw, which will turn our camera because we're attached to it
@@ -66,15 +70,10 @@ void AMyPawn::Tick(float DeltaTime)
 		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CamVelocity.Pitch, camAngleMin, camAngleMax);
 		CameraSpringArm->SetWorldRotation(NewRotation);
 		float p = NewRotation.Pitch;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(p));
 
 	}
 
-
-
-
-
-
+	shoot();
 
 }
 
@@ -115,4 +114,36 @@ void AMyPawn::Cam_YawAxis(float AxisValue) {
 	CamVelocity.Yaw = FMath::Clamp(AxisValue, -1.0f, 1.0f) * camSpeed;
 }
 
+void AMyPawn::shoot(){
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
 
+	 Startcam = OurCamera->GetComponentLocation();
+	 ForwardVectorCam = OurCamera->GetForwardVector();
+	 EndCam = (ForwardVectorCam * 1000000.0f);
+	 ForwardVectorPlayer = GetActorForwardVector();
+
+
+
+
+	if (ActorLineTraceSingle(camhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams))
+	{
+		EndPlayer = camhit.Location;
+	}
+	if (ActorLineTraceSingle(Playerhit, Startplayer, EndPlayer, ECC_WorldStatic, CollisionParams))
+	{
+		try
+		{
+			ATarget* target = Cast<ATarget>(Playerhit.GetActor());
+			target->killTarget();
+		}
+		catch (const std::exception&)
+		{
+			//pass
+		}
+
+	}
+	DrawDebugLine(GetWorld(), Startcam, EndCam, FColor::Red, false, 1, 0, 1);
+
+
+}

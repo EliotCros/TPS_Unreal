@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "shoot.h"
+#include "Target.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/SpringArmComponent.h"
@@ -10,6 +12,8 @@
 //#include "ConstructorHelpers.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/GameEngine.h"
+#include<iostream>
+#include<limits>
 #include "MyPawn.generated.h"
 
 UCLASS()
@@ -27,6 +31,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+
+	void shoot();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -43,6 +49,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComp;
 
+	UPROPERTY(EditAnywhere)
+		Ashoot* shootComp;
 	UPROPERTY(EditAnywhere)
 		float Speed = 200.0f;
 	UPROPERTY(EditAnywhere)
@@ -66,6 +74,15 @@ public:
 	FVector CurrentVelocity;
 	FRotator CamVelocity;
 	bool onGround;
+	FHitResult camhit;
+	FVector Startcam ;
+	FVector ForwardVectorCam;
+	FVector EndCam;
 
+
+	FHitResult Playerhit;
+	FVector ForwardVectorPlayer ;
+	FVector Startplayer ;
+	FVector EndPlayer ;
 
 };

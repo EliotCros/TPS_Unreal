@@ -40,7 +40,26 @@ public:
 	UFUNCTION()
 		void MoveRight(float Value);
 
+	UPROPERTY(EditAnywhere)
+		float camAngleMax = 50.0f;
+	UPROPERTY(EditAnywhere)
+		float camAngleMin = -89.0f;
 
+	// Sets jump flag when key is pressed.
+	UFUNCTION()
+		void StartJump();
+	// Clears jump flag when key is released.
+	UFUNCTION()
+		void StopJump();
+
+	//Input Cam
+	void Cam_PitchAxis(float AxisValue);
+	void Cam_YawAxis(float AxisValue);	
+	
+	FRotator CamVelocity;
+
+	UPROPERTY(EditAnywhere)
+		float camSpeed = 7.5f;
 
 
 

@@ -43,6 +43,21 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
+
+
+
+
+
+
+	//Rotate our camera's pitch, but limit it so we're always looking downward
+	{
+		FRotator NewRotation = CameraSpringArm->GetComponentRotation();
+		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + CamVelocity.Pitch, camAngleMin, camAngleMax);
+		CameraSpringArm->SetWorldRotation(NewRotation);
+		float p = NewRotation.Pitch;
+	}
+
 }
 
 // Called to bind functionality to input
@@ -55,14 +70,22 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 
 	PlayerInputComponent->BindAxis("rotateX", this, &APlayerCharacter::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("rotateY", this, &APlayerCharacter::AddControllerPitchInput);
+	PlayerInputComponent->BindAxis("rotateY", this, &APlayerCharacter::Cam_PitchAxis);
+
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::StartJump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::StopJump);
 }
 
 void APlayerCharacter::MoveForward(float Value)
 {
 	// Find out which way is "forward" and record that the player wants to move that way.
-	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X);
-	AddMovementInput(Direction, Value);
+
+	//Get the forward vector
+	FVector direction = FRotationMatrix(GetControlRotation()).GetScaledAxis(EAxis::X);
+
+	// We get the flattened forward look direction and normalize it
+	direction = FVector(direction.X, direction.Y, 0.f).GetSafeNormal(); 
+	AddMovementInput(direction, Value);
 }
 
 void APlayerCharacter::MoveRight(float Value)
@@ -70,4 +93,24 @@ void APlayerCharacter::MoveRight(float Value)
 	// Find out which way is "right" and record that the player wants to move that way.
 	FVector Direction = FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y);
 	AddMovementInput(Direction, Value);  
+}
+
+void APlayerCharacter::StartJump()
+{
+	bPressedJump = true;
+}
+
+void APlayerCharacter::StopJump()
+{
+	bPressedJump = false;
+}
+
+void APlayerCharacter::Cam_PitchAxis(float AxisValue) {
+	// Move at 100 units per second forward or backward
+	CamVelocity.Pitch = FMath::Clamp(AxisValue, -1.0f, 1.0f) * camSpeed;
+}
+
+void APlayerCharacter::Cam_YawAxis(float AxisValue) {
+	// Move at 100 units per second right or left
+	CamVelocity.Yaw = FMath::Clamp(AxisValue, -1.0f, 1.0f) * camSpeed;
 }

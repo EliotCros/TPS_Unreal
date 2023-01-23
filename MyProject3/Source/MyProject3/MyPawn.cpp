@@ -116,6 +116,7 @@ void AMyPawn::Cam_YawAxis(float AxisValue) {
 
 void AMyPawn::shoot(){
 	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
 
 	 Startcam = OurCamera->GetComponentLocation();
 	 ForwardVectorCam = OurCamera->GetForwardVector();
@@ -131,8 +132,18 @@ void AMyPawn::shoot(){
 	}
 	if (ActorLineTraceSingle(Playerhit, Startplayer, EndPlayer, ECC_WorldStatic, CollisionParams))
 	{
-	}
+		try
+		{
+			ATarget* target = Cast<ATarget>(Playerhit.GetActor());
+			target->killTarget();
+		}
+		catch (const std::exception&)
+		{
+			//pass
+		}
 
-	DrawDebugLine(GetWorld(), Startplayer, EndPlayer, FColor::Green, false, 1, 0, 1);
+	}
+	DrawDebugLine(GetWorld(), Startcam, EndCam, FColor::Red, false, 1, 0, 1);
+
 
 }

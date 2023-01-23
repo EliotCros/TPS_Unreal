@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "shoot.h"
+#include "Target.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/SpringArmComponent.h"

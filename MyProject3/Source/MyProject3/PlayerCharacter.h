@@ -64,4 +64,18 @@ public:
 
 
 
+	//raycast stuff
+	UFUNCTION()
+		void shoot();
+	FHitResult camhit;
+	FVector Startcam;
+	FVector ForwardVectorCam;
+	FVector EndCam;
+
+
+	FHitResult Playerhit;
+	FVector ForwardVectorPlayer;
+	FVector Startplayer;
+	FVector EndPlayer;
+
 };

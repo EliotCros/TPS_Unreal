@@ -2,6 +2,8 @@
 
 
 #include "PlayerCharacter.h"
+#include "target.h"
+#include "shoot.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/SpringArmComponent.h"
@@ -43,7 +45,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
+	//shoot();
 
 
 
@@ -74,6 +76,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APlayerCharacter::StopJump);
+
+
+
+	PlayerInputComponent->BindAction("shoot", IE_Released, this, &APlayerCharacter::shoot);
 }
 
 void APlayerCharacter::MoveForward(float Value)
@@ -113,4 +119,39 @@ void APlayerCharacter::Cam_PitchAxis(float AxisValue) {
 void APlayerCharacter::Cam_YawAxis(float AxisValue) {
 	// Move at 100 units per second right or left
 	CamVelocity.Yaw = FMath::Clamp(AxisValue, -1.0f, 1.0f) * camSpeed;
+}
+
+
+void APlayerCharacter::shoot() {
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	Startcam = OurCamera->GetComponentLocation();
+	ForwardVectorCam = OurCamera->GetForwardVector();
+	EndCam = (ForwardVectorCam * 1000000.0f);
+	ForwardVectorPlayer = GetActorForwardVector();
+
+
+
+
+	if (ActorLineTraceSingle(camhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams))
+	{
+		EndPlayer = camhit.Location;
+	}
+	if (ActorLineTraceSingle(Playerhit, Startplayer, EndPlayer, ECC_WorldStatic, CollisionParams))
+	{
+		try
+		{
+			ATarget* target = Cast<ATarget>(Playerhit.GetActor());
+			target->killTarget();
+		}
+		catch (const std::exception&)
+		{
+			//pass
+		}
+
+	}
+	DrawDebugLine(GetWorld(), Startcam, EndCam, FColor::Red, false, 1, 0, 1);
+
+
 }

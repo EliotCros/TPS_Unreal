@@ -34,6 +34,8 @@ void ATarget::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATarget::killTarget()
 {
-	Destroy();
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, this->GetActorLocation().ToString());
+
+	//Destroy();
 }
 

@@ -31,5 +31,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComp;
 
+	UFUNCTION()
+		void raise();
+	UFUNCTION()
+		void lower();
 
 };

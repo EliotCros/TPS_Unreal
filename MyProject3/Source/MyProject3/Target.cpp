@@ -37,13 +37,21 @@ void ATarget::killTarget()
 
 	try
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("test"));
-
+		lower();
 	}
 	catch (const std::exception&)
 	{
 
 	}
 	//Destroy();
+}
+
+void ATarget::raise() {
+
+}
+
+void ATarget::lower() {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("test"));
+
 }
 

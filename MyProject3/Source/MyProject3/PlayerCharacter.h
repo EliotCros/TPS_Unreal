@@ -30,9 +30,10 @@ public:
 		class USpringArmComponent* CameraSpringArm;
 
 	UPROPERTY(EditAnywhere)
+		class UCharacterMovementComponent* CharacterMove;
+
+	UPROPERTY(EditAnywhere)
 		class UCameraComponent* OurCamera;
-
-
 
 
 	UFUNCTION()
@@ -51,6 +52,7 @@ public:
 	// Clears jump flag when key is released.
 	UFUNCTION()
 		void StopJump();
+
 
 	//Input Cam
 	void Cam_PitchAxis(float AxisValue);
@@ -77,5 +79,11 @@ public:
 	FVector ForwardVectorPlayer;
 	FVector Startplayer;
 	FVector EndPlayer;
+
+
+	float speed;
+	void StartSprint();
+	void StopSprint();
+	bool isSPrinting;
 
 };

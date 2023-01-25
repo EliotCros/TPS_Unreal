@@ -6,6 +6,7 @@
 #include "shoot.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
@@ -30,6 +31,8 @@ APlayerCharacter::APlayerCharacter()
 	CameraSpringArm->bEnableCameraLag = true;
 	CameraSpringArm->CameraLagSpeed = 3.0f;
 
+	CharacterMove = GetCharacterMovement();
+
 
 }
 
@@ -37,6 +40,7 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
 
 }
 
@@ -47,7 +51,9 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	//shoot();
 
-
+	if (!isSPrinting && CharacterMove->MaxWalkSpeed > 600.0f) {
+		CharacterMove->MaxWalkSpeed -= 50.f;
+	}
 
 
 
@@ -80,18 +86,21 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 
 	PlayerInputComponent->BindAction("shoot", IE_Released, this, &APlayerCharacter::shoot);
+
+	PlayerInputComponent->BindAction("sprint", IE_Pressed, this, &APlayerCharacter::StartSprint);
+	PlayerInputComponent->BindAction("sprint", IE_Released, this, &APlayerCharacter::StopSprint);
 }
 
 void APlayerCharacter::MoveForward(float Value)
 {
 	// Find out which way is "forward" and record that the player wants to move that way.
-
 	//Get the forward vector
 	FVector direction = FRotationMatrix(GetControlRotation()).GetScaledAxis(EAxis::X);
 
 	// We get the flattened forward look direction and normalize it
 	direction = FVector(direction.X, direction.Y, 0.f).GetSafeNormal(); 
 	AddMovementInput(direction, Value);
+	
 }
 
 void APlayerCharacter::MoveRight(float Value)
@@ -121,6 +130,16 @@ void APlayerCharacter::Cam_YawAxis(float AxisValue) {
 	CamVelocity.Yaw = FMath::Clamp(AxisValue, -1.0f, 1.0f) * camSpeed;
 }
 
+void APlayerCharacter::StartSprint(){
+	CharacterMove->MaxWalkSpeed = 1200.0f;
+	isSPrinting = true;
+
+}
+
+void APlayerCharacter::StopSprint(){
+	isSPrinting = false;
+
+}
 
 void APlayerCharacter::shoot() {
 	FCollisionQueryParams CollisionParams;
@@ -138,12 +157,11 @@ void APlayerCharacter::shoot() {
 	{
 		EndPlayer = camhit.Location;
 	}
-	if (ActorLineTraceSingle(Playerhit, Startplayer, EndPlayer, ECC_WorldStatic, CollisionParams))
+	if (ActorLineTraceSingle(Playerhit, Startplayer, EndCam, ECC_WorldStatic, CollisionParams))
 	{
 
 		try
 		{
-
 			ATarget* target = Cast<ATarget>(Playerhit.GetActor());
 			target->killTarget();
 		}

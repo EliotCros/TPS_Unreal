@@ -15,6 +15,9 @@ ATarget::ATarget()
 void ATarget::BeginPlay()
 {
 	Super::BeginPlay();
+
+	startHeight = GetActorLocation().Z;
+
 	
 }
 
@@ -22,6 +25,34 @@ void ATarget::BeginPlay()
 void ATarget::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (isMoving) {
+		FVector Location = GetActorLocation();
+		Location.Z += RaisingSpeed * DeltaTime * ((lowering)?-1:1);
+		
+		if (Location.Z < startHeight) {
+			lowering = false;
+			isMoving = false;
+			Location.Z = startHeight;
+		}
+		if (Location.Z > startHeight + targetHeight) {
+			raising = false;
+			isMoving = false;
+			Location.Z = startHeight + targetHeight;
+		}
+		SetActorLocation(Location);
+	}
+
+	if (isRotating) {
+		FRotator rot = GetActorRotation();
+		rot.Roll += RotatingSpeed * DeltaTime ;
+
+		if (rot.Roll > targetRotation) {
+			rot.Roll = targetRotation;
+		}
+
+		SetActorRotation(rot);
+
+	}
 
 }
 
@@ -32,26 +63,27 @@ void ATarget::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void ATarget::killTarget()
-{
-
-	try
-	{
-		lower();
-	}
-	catch (const std::exception&)
-	{
-
-	}
-	//Destroy();
+void ATarget::killTarget() {
+	Fallen();
+	isDead = true;
 }
 
 void ATarget::raise() {
-
+	isMoving = true;
+	raising = true;
+	targetHeight = raisedHeight;
 }
 
 void ATarget::lower() {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("test"));
+	isMoving = true;
+	lowering = true;
+	targetHeight = 0;
 
 }
+
+void ATarget::Fallen() {
+	isRotating = true;
+	targetRotation = FallingAngle;
+}
+
 

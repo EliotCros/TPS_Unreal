@@ -4,6 +4,7 @@
 #include "Engine/GameEngine.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "MyInterfaceShootable.h"
 #include "Target.generated.h"
 
 UCLASS()
@@ -25,7 +26,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
+	UFUNCTION()
 	void killTarget();
 
 	UPROPERTY(EditAnywhere)
@@ -35,5 +37,37 @@ public:
 		void raise();
 	UFUNCTION()
 		void lower();
+	UFUNCTION()
+		void Fallen();
+
+	bool isMoving = false;
+	bool raised = false;
+	bool fallen = false;
+	bool isDead = false;
+
+	bool raising = false;
+	bool lowering = false;
+
+	bool isRotating = false;
+
+	float startHeight;
+	float targetHeight = 0;
+	UPROPERTY(EditAnywhere)
+		float raisedHeight = 50.0f;
+	float targetRotation = 0;
+	UPROPERTY(EditAnywhere)
+		float FallingAngle = 90.0f;
+
+
+	UPROPERTY(EditAnywhere)
+		float RaisingSpeed = 90.0f;
+	UPROPERTY(EditAnywhere)
+		float RotatingSpeed = 90.0f;
+
+
+
+	//virtual void shoot() override;
+
+
 
 };

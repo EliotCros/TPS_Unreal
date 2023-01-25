@@ -143,9 +143,18 @@ void APlayerCharacter::shoot() {
 
 		try
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("hit"));
 
-			ATarget* target = Cast<ATarget>(Playerhit.GetActor());
-			target->killTarget();
+
+
+
+			IMyInterfaceShootable* target = Cast<IMyInterfaceShootable>(Playerhit.GetActor());
+
+			//if (target != nullptr){
+			if (Cast<IMyInterfaceShootable>(Playerhit.GetActor())){
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("target"));
+				//target->shoot();
+			}
 		}
 		catch (const std::exception&)
 		{

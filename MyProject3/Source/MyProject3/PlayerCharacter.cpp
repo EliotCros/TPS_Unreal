@@ -2,10 +2,9 @@
 
 
 #include "PlayerCharacter.h"
-#include "targetV2.h"
+#include "target.h"
 #include "shoot.h"
 #include "Weapon.h"
-#include "MyInterfaceShootable.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/CharacterMovementComponent.h"
@@ -195,13 +194,13 @@ void APlayerCharacter::shoot() {
 	EndCam = (ForwardVectorCam * 1000000.0f);
 	ForwardVectorPlayer = GetActorForwardVector();
 	Startplayer = GetMesh()->GetSocketLocation("Muzzle_01");
-
-
-	if (GetWorld()->LineTraceSingleByChannel(Playerhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams)){
+	
+	if (GetWorld()->LineTraceSingleByChannel(Playerhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams)) {
 
 		if (Playerhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
 			IMyInterfaceShootable::Execute_ProcessEvent(Playerhit.GetActor(), Playerhit.GetActor()->GetFName(), Playerhit.Distance);
 		}
 	}
+	DrawDebugLine(GetWorld(), Startcam, EndCam, FColor::Red, false, 1, 0, 1);
 	DrawDebugLine(GetWorld(), Startplayer, EndCam, FColor::Red, false, 1, 0, 1);
 }

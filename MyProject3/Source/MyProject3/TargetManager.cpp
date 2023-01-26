@@ -38,7 +38,7 @@ void ATargetManager::Tick(float DeltaTime)
 		}
 
 		//RUNNING
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, (targetList[i]->isDead) ? FString::Printf(TEXT("true")) : FString::Printf(TEXT("false")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, (targetList[i]->isDead) ? FString::Printf(TEXT("true")) : FString::Printf(TEXT("false")));
 
 		if (!testTarget()) {
 

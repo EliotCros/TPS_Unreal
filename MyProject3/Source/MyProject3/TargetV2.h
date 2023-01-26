@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MyInterfaceShootable.h"
+#include "Kismet/GameplayStatics.h"
 #include "TargetV2.generated.h"
+
 
 UCLASS()
 class MYPROJECT3_API ATargetV2 : public AActor, public IMyInterfaceShootable
@@ -28,6 +30,8 @@ public:
 
 	UFUNCTION()
 		void killTarget();
+	UFUNCTION()
+		void reset();
 
 	UFUNCTION()
 		void raise();
@@ -35,29 +39,34 @@ public:
 		void lower();
 	UFUNCTION()
 		void Fallen();
+	UFUNCTION()
+		void emitPoint();
 
 	bool isMoving = false;
 	bool raised = false;
 	bool fallen = false;
 	bool isDead = false;
 
+	//Raise
 	bool raising = false;
 	bool lowering = false;
-
-	bool isRotating = false;
-
 	float startHeight;
 	float targetHeight = 0;
 	UPROPERTY(EditAnywhere)
 		float raisedHeight = 50.0f;
+	UPROPERTY(EditAnywhere)
+		float RaisingSpeed = 90.0f;
+
+	//Rotate
+	bool isRotating = false;
+	float startRot;
 	float targetRotation = 0;
 	UPROPERTY(EditAnywhere)
 		float FallingAngle = 90.0f;
-
-
-	UPROPERTY(EditAnywhere)
-		float RaisingSpeed = 90.0f;
 	UPROPERTY(EditAnywhere)
 		float RotatingSpeed = 90.0f;
+
+	UPROPERTY(EditAnywhere)
+		int pointVal = 1;
 
 };

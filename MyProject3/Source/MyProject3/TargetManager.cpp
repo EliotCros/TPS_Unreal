@@ -32,13 +32,11 @@ void ATargetManager::Tick(float DeltaTime)
 				start();
 			}else if (parentManager->isFinished()) {
 				bool t = parentManager->isFinished();
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, (t)?FString::Printf(TEXT("true")): FString::Printf(TEXT("false")));
 				start();
 			}
 		}
 
 		//RUNNING
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, (targetList[i]->isDead) ? FString::Printf(TEXT("true")) : FString::Printf(TEXT("false")));
 
 		if (!testTarget()) {
 
@@ -57,20 +55,36 @@ void ATargetManager::start(){
 }
 
 /*
-	return true if at least a target is alive
+	return false if at least a target is alive
 */
 bool ATargetManager::testTarget(){
 	for (size_t i = 0; i < targetList.Num(); i++) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, (targetList[i]->isDead) ? FString::Printf(TEXT("true")) : FString::Printf(TEXT("false")));
 
-		if (targetList[i]->isDead) return true;
+		if (!targetList[i]->isDead) return true;
 	}
 	return false;
 }
 
 bool ATargetManager::isFinished()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Blocking Hit =: %s"), finished));
 	return finished;
+}
+
+int ATargetManager::targetCount(){
+	if (parentManager == nullptr) {
+		return targetList.Num();
+	}
+	else {
+		return parentManager->targetCount() + targetList.Num();
+	}
+}
+
+void ATargetManager::reset() {
+	for (size_t i = 0; i < targetList.Num(); i++) {
+		targetList[i]->reset();
+	}
+	if (parentManager != nullptr) {
+		parentManager->reset();
+	}
 }
 

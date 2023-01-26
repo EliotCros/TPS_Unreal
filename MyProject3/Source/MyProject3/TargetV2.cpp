@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "HGameManager.h"
 
 #include "TargetV2.h"
 
@@ -15,6 +16,11 @@ ATargetV2::ATargetV2()
 void ATargetV2::BeginPlay()
 {
 	Super::BeginPlay();
+	FVector Location = GetActorLocation();
+	FRotator rot = GetActorRotation();
+
+	startHeight = Location.Z;
+	startRot= rot.Roll;
 	
 }
 
@@ -22,7 +28,6 @@ void ATargetV2::BeginPlay()
 
 void ATargetV2::ProcessEvent_Implementation(FName Name, float Float)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Parameter (FName) : %s \nParameter (float) : %f"), *Name.ToString(), Float);
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("target"));
 	killTarget();
 	//SetActorScale3D(FVector(GetActorScale.X * 1.05f));
@@ -70,13 +75,17 @@ void ATargetV2::Tick(float DeltaTime)
 
 
 void ATargetV2::killTarget() {
-	Fallen();
-	isDead = true;
+	if (raised) {
+		Fallen();
+		isDead = true;
+		emitPoint();
+	}
 }
+
 
 void ATargetV2::raise() {
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("raise"));
-
+	raised = true;
 	raising = true;
 	targetHeight = raisedHeight;
 }
@@ -90,4 +99,28 @@ void ATargetV2::lower() {
 void ATargetV2::Fallen() {
 	isRotating = true;
 	targetRotation = FallingAngle;
+}
+
+void ATargetV2::emitPoint(){
+	TSubclassOf<AHGameManager> classToFind;
+	classToFind = AHGameManager::StaticClass();
+	TArray<AActor*> GM;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), classToFind, GM);
+
+	if (GM[0] != nullptr) {
+		AHGameManager* g = Cast<AHGameManager>(GM[0]);
+		g->getPoint(pointVal);
+	}
+
+
+}
+
+
+void ATargetV2::reset(){
+	FVector Location = GetActorLocation();
+	Location.Z = startHeight;
+	SetActorLocation(Location);
+	FRotator rot = GetActorRotation();
+	rot.Roll = startRot;
+	SetActorRotation(rot);
 }

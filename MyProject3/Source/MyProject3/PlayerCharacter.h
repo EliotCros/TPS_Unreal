@@ -49,13 +49,15 @@ public:
 	UPROPERTY(EditAnywhere)
 		float camAngleMin = -89.0f;
 
-
+	FTimerHandle shootTimerHandle;
 	// Sets jump flag when key is pressed.
 	UFUNCTION()
 		void StartJump();
 	// Clears jump flag when key is released.
 	UFUNCTION()
 		void StopJump();
+
+	FVector recoil(FVector aim);
 
 
 	//Input Cam
@@ -73,6 +75,8 @@ public:
 	//raycast stuff
 	UFUNCTION()
 		void shoot();
+	bool isShooting;
+
 	FHitResult camhit;
 	FVector Startcam;
 	FVector ForwardVectorCam;
@@ -92,9 +96,14 @@ public:
 
 	void StartAim();
 	void StopAim();
+	void shootReleased();
+	void rayShoot();
 	bool isAim;
 
 	void ChangeWeapon1();
 	void ChangeWeapon2();
 	FVector MuzzleLocation;
+	FVector ForwardAim;
+
+	float offset_aim = 20.0f;
 };

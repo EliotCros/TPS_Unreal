@@ -5,6 +5,7 @@
 #include "target.h"
 #include "shoot.h"
 #include "Weapon.h"
+#include "Math/UnrealMathUtility.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/CharacterMovementComponent.h"
@@ -96,7 +97,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 
 
-	PlayerInputComponent->BindAction("shoot", IE_Released, this, &APlayerCharacter::shoot);
+	PlayerInputComponent->BindAction("shoot", IE_Pressed, this, &APlayerCharacter::shoot);
+	PlayerInputComponent->BindAction("shoot", IE_Released, this, &APlayerCharacter::shootReleased);
 
 	PlayerInputComponent->BindAction("sprint", IE_Pressed, this, &APlayerCharacter::StartSprint);
 	PlayerInputComponent->BindAction("sprint", IE_Released, this, &APlayerCharacter::StopSprint);
@@ -172,6 +174,7 @@ void APlayerCharacter::Cam_YawAxis(float AxisValue) {
 	CamVelocity.Yaw = FMath::Clamp(AxisValue, -1.0f, 1.0f) * camSpeed;
 }
 
+
 void APlayerCharacter::StartSprint(){
 	CharacterMove->MaxWalkSpeed = 1200.0f;
 	isSPrinting = true;
@@ -182,8 +185,33 @@ void APlayerCharacter::StopSprint(){
 	isSPrinting = false;
 
 }
+void APlayerCharacter::shootReleased() {
+	isShooting = false;
+	GetWorld()->GetTimerManager().ClearTimer(shootTimerHandle);
+
+}
 
 void APlayerCharacter::shoot() {
+	rayShoot();
+	GetWorld()->GetTimerManager().SetTimer(shootTimerHandle, this, &APlayerCharacter::rayShoot, 0.2f, true);
+}
+
+FVector APlayerCharacter::recoil(FVector aim) {
+
+	float offset = -offset_aim + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (offset_aim + offset_aim)));
+	aim.X += offset;
+	offset = -offset_aim + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (offset_aim + offset_aim)));
+	aim.Z += offset;
+	offset = -offset_aim + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (offset_aim + offset_aim)));
+	aim.Y += offset;
+
+	return aim;
+
+}
+
+
+void APlayerCharacter::rayShoot() {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(2));
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
 	CollisionParams.bIgnoreBlocks = false;
@@ -201,6 +229,15 @@ void APlayerCharacter::shoot() {
 			IMyInterfaceShootable::Execute_ProcessEvent(Playerhit.GetActor(), Playerhit.GetActor()->GetFName(), Playerhit.Distance);
 		}
 	}
-	DrawDebugLine(GetWorld(), Startcam, EndCam, FColor::Red, false, 1, 0, 1);
-	DrawDebugLine(GetWorld(), Startplayer, EndCam, FColor::Red, false, 1, 0, 1);
+
+	FVector hitpoint = recoil(Playerhit.Location);
+	ForwardAim = FVector(hitpoint.X - Startplayer.X, hitpoint.Y - Startplayer.Y, hitpoint.Z - Startplayer.Z) * 1000.0f;
+
+	if (GetWorld()->LineTraceSingleByChannel(Playerhit, Startplayer, ForwardAim, ECC_WorldStatic, CollisionParams)) {
+
+		if (Playerhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
+			IMyInterfaceShootable::Execute_ProcessEvent(Playerhit.GetActor(), Playerhit.GetActor()->GetFName(), Playerhit.Distance);
+		}
+	}
+	DrawDebugLine(GetWorld(), Startplayer, ForwardAim, FColor::Red, false, 1, 0, 1);
 }

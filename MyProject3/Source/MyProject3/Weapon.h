@@ -12,20 +12,6 @@ class MYPROJECT3_API UWeapon : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
-	UWeapon();
-	int currentAmmo;
-	int maxAmmo;
-	int currentClip;
-	int maxClip;
-	int weaponType;
-	float fireRate;
-
-	void ChangeToWeapon1();
-	void ChangeToWeapon2();
-
-
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -33,6 +19,18 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UWeapon();
+	int currentAmmo;
+	int maxAmmo;
+	int currentClip;
+	int maxClip;
+	int weaponType;
 
+	UPROPERTY(EditAnywhere)
+		float fireRate = 0.1f;
+
+
+	void ChangeToWeapon1();
+	void ChangeToWeapon2();
 		
 };

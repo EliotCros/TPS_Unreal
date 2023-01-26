@@ -4,6 +4,7 @@
 #include "PlayerCharacter.h"
 #include "target.h"
 #include "shoot.h"
+#include "Weapon.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/CharacterMovementComponent.h"
@@ -20,6 +21,7 @@ APlayerCharacter::APlayerCharacter()
 	//Create our components
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	Weapon = CreateDefaultSubobject<UWeapon>(TEXT("weapon"));
 	//shootComp = CreateDefaultSubobject<Ashoot>(TEXT("ShootComponent"));
 	
 	CameraSpringArm->SetupAttachment(RootComponent);
@@ -33,6 +35,9 @@ APlayerCharacter::APlayerCharacter()
 
 	CharacterMove = GetCharacterMovement();
 
+	GetMesh()->GetSocketLocation("Muzzle_01");
+
+	MuzzleLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 
 }
 
@@ -52,10 +57,16 @@ void APlayerCharacter::Tick(float DeltaTime)
 	//shoot();
 
 	if (!isSPrinting && CharacterMove->MaxWalkSpeed > 600.0f) {
-		CharacterMove->MaxWalkSpeed -= 50.f;
+		CharacterMove->MaxWalkSpeed -= 50.0f;
 	}
 
+	if (isAim && OurCamera->FieldOfView >= 50.0f){
+		OurCamera->FieldOfView -= 5.f;
+	}
 
+	if (!isAim && OurCamera->FieldOfView <= 90.0f){
+		OurCamera->FieldOfView += 5.f;
+	}
 
 
 	//Rotate our camera's pitch, but limit it so we're always looking downward
@@ -89,7 +100,15 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	PlayerInputComponent->BindAction("sprint", IE_Pressed, this, &APlayerCharacter::StartSprint);
 	PlayerInputComponent->BindAction("sprint", IE_Released, this, &APlayerCharacter::StopSprint);
+
+	PlayerInputComponent->BindAction("aim", IE_Pressed, this, &APlayerCharacter::StartAim);
+	PlayerInputComponent->BindAction("aim", IE_Released, this, &APlayerCharacter::StopAim);
+
+
+	PlayerInputComponent->BindAction("weapon1", IE_Pressed, this, &APlayerCharacter::ChangeWeapon1);
+	PlayerInputComponent->BindAction("weapon2", IE_Pressed, this, &APlayerCharacter::ChangeWeapon2);
 }
+
 
 void APlayerCharacter::MoveForward(float Value)
 {
@@ -120,6 +139,29 @@ void APlayerCharacter::StopJump()
 	bPressedJump = false;
 }
 
+void APlayerCharacter::StartAim()
+{
+	isAim = true;
+	CameraSpringArm->TargetArmLength = 170.0f;
+}
+
+void APlayerCharacter::StopAim()
+{
+	isAim = false;
+	CameraSpringArm->TargetArmLength = 230.0f;
+}
+
+
+
+void APlayerCharacter::ChangeWeapon1() {
+	Weapon->ChangeToWeapon1();
+}
+
+void APlayerCharacter::ChangeWeapon2() {
+	Weapon->ChangeToWeapon2();
+
+}
+
 void APlayerCharacter::Cam_PitchAxis(float AxisValue) {
 	// Move at 100 units per second forward or backward
 	CamVelocity.Pitch = FMath::Clamp(AxisValue, -1.0f, 1.0f) * camSpeed;
@@ -144,22 +186,22 @@ void APlayerCharacter::StopSprint(){
 void APlayerCharacter::shoot() {
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
+	CollisionParams.bIgnoreBlocks = false;
+	CollisionParams.bIgnoreTouches = false;
 
 	Startcam = OurCamera->GetComponentLocation();
 	ForwardVectorCam = OurCamera->GetForwardVector();
 	EndCam = (ForwardVectorCam * 1000000.0f);
 	ForwardVectorPlayer = GetActorForwardVector();
-
-
-
+	Startplayer = GetMesh()->GetSocketLocation("Muzzle_01");
+	;
 
 	if (ActorLineTraceSingle(camhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams))
 	{
 		EndPlayer = camhit.Location;
 	}
-	if (ActorLineTraceSingle(Playerhit, Startplayer, EndCam, ECC_WorldStatic, CollisionParams))
+	if (ActorLineTraceSingle(Playerhit, Startplayer, EndPlayer, ECC_WorldStatic, CollisionParams))
 	{
-
 		try
 		{
 			ATarget* target = Cast<ATarget>(Playerhit.GetActor());
@@ -171,7 +213,5 @@ void APlayerCharacter::shoot() {
 		}
 
 	}
-	DrawDebugLine(GetWorld(), Startcam, EndCam, FColor::Red, false, 1, 0, 1);
-
-
+	DrawDebugLine(GetWorld(), Startplayer, EndCam, FColor::Red, false, 1, 0, 1);
 }

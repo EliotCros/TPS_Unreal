@@ -35,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		class UCameraComponent* OurCamera;
 
+	UPROPERTY(EditAnywhere)
+		class UWeapon* Weapon;
+
 
 	UFUNCTION()
 		void MoveForward(float Value);
@@ -45,6 +48,7 @@ public:
 		float camAngleMax = 50.0f;
 	UPROPERTY(EditAnywhere)
 		float camAngleMin = -89.0f;
+
 
 	// Sets jump flag when key is pressed.
 	UFUNCTION()
@@ -86,4 +90,11 @@ public:
 	void StopSprint();
 	bool isSPrinting;
 
+	void StartAim();
+	void StopAim();
+	bool isAim;
+
+	void ChangeWeapon1();
+	void ChangeWeapon2();
+	FVector MuzzleLocation;
 };

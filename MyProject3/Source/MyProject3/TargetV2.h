@@ -1,20 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-#include "Engine/GameEngine.h"
+
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Actor.h"
 #include "MyInterfaceShootable.h"
-#include "Target.generated.h"
+#include "TargetV2.generated.h"
 
 UCLASS()
-class MYPROJECT3_API ATarget : public APawn
+class MYPROJECT3_API ATargetV2 : public AActor, public IMyInterfaceShootable
 {
 	GENERATED_BODY()
-
-public:
-	// Sets default values for this pawn's properties
-	ATarget();
+	
+public:	
+	// Sets default values for this actor's properties
+	ATargetV2();
 
 protected:
 	// Called when the game starts or when spawned
@@ -24,14 +24,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	UFUNCTION()
-	void killTarget();
+	virtual void ProcessEvent_Implementation(FName Name, float Float) override;
 
-	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* StaticMeshComp;
+	UFUNCTION()
+		void killTarget();
 
 	UFUNCTION()
 		void raise();
@@ -63,11 +59,5 @@ public:
 		float RaisingSpeed = 90.0f;
 	UPROPERTY(EditAnywhere)
 		float RotatingSpeed = 90.0f;
-
-
-
-	//virtual void shoot() override;
-
-
 
 };

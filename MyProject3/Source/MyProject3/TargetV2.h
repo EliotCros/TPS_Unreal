@@ -26,4 +26,38 @@ public:
 
 	virtual void ProcessEvent_Implementation(FName Name, float Float) override;
 
+	UFUNCTION()
+		void killTarget();
+
+	UFUNCTION()
+		void raise();
+	UFUNCTION()
+		void lower();
+	UFUNCTION()
+		void Fallen();
+
+	bool isMoving = false;
+	bool raised = false;
+	bool fallen = false;
+	bool isDead = false;
+
+	bool raising = false;
+	bool lowering = false;
+
+	bool isRotating = false;
+
+	float startHeight;
+	float targetHeight = 0;
+	UPROPERTY(EditAnywhere)
+		float raisedHeight = 50.0f;
+	float targetRotation = 0;
+	UPROPERTY(EditAnywhere)
+		float FallingAngle = 90.0f;
+
+
+	UPROPERTY(EditAnywhere)
+		float RaisingSpeed = 90.0f;
+	UPROPERTY(EditAnywhere)
+		float RotatingSpeed = 90.0f;
+
 };

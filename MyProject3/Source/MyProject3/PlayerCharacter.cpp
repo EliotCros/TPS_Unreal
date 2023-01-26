@@ -2,8 +2,9 @@
 
 
 #include "PlayerCharacter.h"
-#include "target.h"
+#include "targetV2.h"
 #include "shoot.h"
+#include "MyInterfaceShootable.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/SpringArmComponent.h"
@@ -19,7 +20,6 @@ APlayerCharacter::APlayerCharacter()
 	//Create our components
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-	//shootComp = CreateDefaultSubobject<Ashoot>(TEXT("ShootComponent"));
 	
 	CameraSpringArm->SetupAttachment(RootComponent);
 	OurCamera->SetupAttachment(CameraSpringArm, USpringArmComponent::SocketName);
@@ -132,35 +132,11 @@ void APlayerCharacter::shoot() {
 	ForwardVectorPlayer = GetActorForwardVector();
 
 
+	if (GetWorld()->LineTraceSingleByChannel(Playerhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams)){
 
-
-	if (ActorLineTraceSingle(camhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams))
-	{
-		EndPlayer = camhit.Location;
-	}
-	if (ActorLineTraceSingle(Playerhit, Startplayer, EndPlayer, ECC_WorldStatic, CollisionParams))
-	{
-
-		try
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("hit"));
-
-
-
-
-			IMyInterfaceShootable* target = Cast<IMyInterfaceShootable>(Playerhit.GetActor());
-
-			//if (target != nullptr){
-			if (Cast<IMyInterfaceShootable>(Playerhit.GetActor())){
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("target"));
-				//target->shoot();
-			}
+		if (Playerhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
+			IMyInterfaceShootable::Execute_ProcessEvent(Playerhit.GetActor(), Playerhit.GetActor()->GetFName(), Playerhit.Distance);
 		}
-		catch (const std::exception&)
-		{
-			//pass
-		}
-
 	}
 	DrawDebugLine(GetWorld(), Startcam, EndCam, FColor::Red, false, 1, 0, 1);
 

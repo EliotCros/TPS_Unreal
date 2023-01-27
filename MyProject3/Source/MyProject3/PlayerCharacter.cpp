@@ -1,15 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "Math/UnrealMathUtility.h"
 #include "PlayerCharacter.h"
 #include "target.h"
 #include "shoot.h"
-#include "Weapon.h"
-#include "Math/UnrealMathUtility.h"
+#include "WeaponV3.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+
+
+float RandomFloat(float a, float b) {
+	float random = ((float)rand()) / (float)RAND_MAX;
+	float diff = b - a;
+	float r = random * diff;
+	return a + r;
+}
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -22,7 +29,6 @@ APlayerCharacter::APlayerCharacter()
 	//Create our components
 	CameraSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	OurCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-	Weapon = CreateDefaultSubobject<UWeapon>(TEXT("weapon"));
 	//shootComp = CreateDefaultSubobject<Ashoot>(TEXT("ShootComponent"));
 	
 	CameraSpringArm->SetupAttachment(RootComponent);
@@ -48,6 +54,7 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 
+
 }
 
 // Called every frame
@@ -55,7 +62,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//shoot();
+	if (Weapon == nullptr) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("okkk")));
+	}
+
 
 	if (!isSPrinting && CharacterMove->MaxWalkSpeed > 600.0f) {
 		CharacterMove->MaxWalkSpeed -= 50.0f;
@@ -105,6 +115,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	PlayerInputComponent->BindAction("aim", IE_Pressed, this, &APlayerCharacter::StartAim);
 	PlayerInputComponent->BindAction("aim", IE_Released, this, &APlayerCharacter::StopAim);
+	PlayerInputComponent->BindAction("reload", IE_Released, this, &APlayerCharacter::reload);
 
 
 	PlayerInputComponent->BindAction("weapon1", IE_Pressed, this, &APlayerCharacter::ChangeWeapon1);
@@ -156,12 +167,13 @@ void APlayerCharacter::StopAim()
 
 
 void APlayerCharacter::ChangeWeapon1() {
-	Weapon->ChangeToWeapon1();
+	Weapon->changeWeapon(0);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Shootgun")));
 }
 
 void APlayerCharacter::ChangeWeapon2() {
-	Weapon->ChangeToWeapon2();
-
+	Weapon->changeWeapon(1);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rifle")));
 }
 
 void APlayerCharacter::Cam_PitchAxis(float AxisValue) {
@@ -192,26 +204,36 @@ void APlayerCharacter::shootReleased() {
 }
 
 void APlayerCharacter::shoot() {
-	rayShoot();
-	GetWorld()->GetTimerManager().SetTimer(shootTimerHandle, this, &APlayerCharacter::rayShoot, 0.2f, true);
+	if (Weapon->canShoot()) {
+	 
+		for (size_t i = 0; i < Weapon->GetNbBullet(); i++)
+		{
+			rayShoot();
+		}
+		Weapon->shooted();
+		GetWorld()->GetTimerManager().SetTimer(shootTimerHandle, this, &APlayerCharacter::rayShoot, 0.2f, true);
+	}
 }
 
-FVector APlayerCharacter::recoil(FVector aim) {
+void APlayerCharacter::reload(){
+	Weapon->reload();
+}
 
-	float offset = -offset_aim + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (offset_aim + offset_aim)));
-	aim.X += offset;
-	offset = -offset_aim + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (offset_aim + offset_aim)));
-	aim.Z += offset;
-	offset = -offset_aim + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (offset_aim + offset_aim)));
-	aim.Y += offset;
+FVector APlayerCharacter::recoil(FVector aim, float offset_aim) {
 
-	return aim;
+	FRotator rot = aim.Rotation();
 
+	float r3 = RandomFloat(-offset_aim, offset_aim);
+	rot.Yaw += r3;
+
+	r3 = RandomFloat(-offset_aim, offset_aim);
+	rot.Pitch += r3;
+
+	return 	rot.Vector();
 }
 
 
 void APlayerCharacter::rayShoot() {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(2));
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
 	CollisionParams.bIgnoreBlocks = false;
@@ -219,25 +241,28 @@ void APlayerCharacter::rayShoot() {
 
 	Startcam = OurCamera->GetComponentLocation();
 	ForwardVectorCam = OurCamera->GetForwardVector();
-	EndCam = (ForwardVectorCam * 1000000.0f);
+	EndCam = (Startcam + ForwardVectorCam * 1000000.0f);
 	ForwardVectorPlayer = GetActorForwardVector();
 	Startplayer = GetMesh()->GetSocketLocation("Muzzle_01");
 	
-	if (GetWorld()->LineTraceSingleByChannel(Playerhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams)) {
+	if (GetWorld()->LineTraceSingleByChannel(camhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams)) {
+
+		if (camhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
+			IMyInterfaceShootable::Execute_ProcessEvent(camhit.GetActor(), camhit.GetActor()->GetFName(), camhit.Distance);
+		}
+	}
+
+	ForwardAim = FVector(camhit.Location.X - Startplayer.X, camhit.Location.Y - Startplayer.Y, camhit.Location.Z - Startplayer.Z);
+	FVector rc = recoil(ForwardAim, Weapon->getSpread());
+	rc.Normalize();
+	FVector hitpoint = Startplayer +  rc * 100000.0f;
+
+	if (GetWorld()->LineTraceSingleByChannel(Playerhit, Startplayer, hitpoint, ECC_WorldStatic, CollisionParams)) {
 
 		if (Playerhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
 			IMyInterfaceShootable::Execute_ProcessEvent(Playerhit.GetActor(), Playerhit.GetActor()->GetFName(), Playerhit.Distance);
 		}
 	}
+	DrawDebugLine(GetWorld(), Startplayer, hitpoint, FColor::Red, false, 10, 0, 1);
 
-	FVector hitpoint = recoil(Playerhit.Location);
-	ForwardAim = FVector(hitpoint.X - Startplayer.X, hitpoint.Y - Startplayer.Y, hitpoint.Z - Startplayer.Z) * 1000.0f;
-
-	if (GetWorld()->LineTraceSingleByChannel(Playerhit, Startplayer, ForwardAim, ECC_WorldStatic, CollisionParams)) {
-
-		if (Playerhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
-			IMyInterfaceShootable::Execute_ProcessEvent(Playerhit.GetActor(), Playerhit.GetActor()->GetFName(), Playerhit.Distance);
-		}
-	}
-	DrawDebugLine(GetWorld(), Startplayer, ForwardAim, FColor::Red, false, 1, 0, 1);
 }

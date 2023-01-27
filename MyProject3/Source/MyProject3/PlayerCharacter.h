@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Target.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -36,7 +37,7 @@ public:
 		class UCameraComponent* OurCamera;
 
 	UPROPERTY(EditAnywhere)
-		class UWeapon* Weapon;
+		class AWeaponV3* Weapon;
 
 
 	UFUNCTION()
@@ -57,7 +58,7 @@ public:
 	UFUNCTION()
 		void StopJump();
 
-	FVector recoil(FVector aim);
+	FVector recoil(FVector aim, float offset_aim);
 
 
 	//Input Cam
@@ -105,5 +106,5 @@ public:
 	FVector MuzzleLocation;
 	FVector ForwardAim;
 
-	float offset_aim = 20.0f;
+	void reload();
 };

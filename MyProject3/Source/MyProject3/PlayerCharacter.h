@@ -8,6 +8,8 @@
 #include "Target.h"
 #include "PlayerCharacter.generated.h"
 
+class UNiagaraSystem;
+
 UCLASS()
 class MYPROJECT3_API APlayerCharacter : public ACharacter
 {
@@ -40,6 +42,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		class AWeaponV3* Weapon;
 
+	UPROPERTY(EditAnywhere)
+		class UParticleSystem* PShoot;
 
 	UFUNCTION()
 		void MoveForward(float Value);

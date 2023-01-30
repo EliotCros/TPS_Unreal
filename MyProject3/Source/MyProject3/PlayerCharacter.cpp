@@ -120,6 +120,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	PlayerInputComponent->BindAction("weapon1", IE_Pressed, this, &APlayerCharacter::ChangeWeapon1);
 	PlayerInputComponent->BindAction("weapon2", IE_Pressed, this, &APlayerCharacter::ChangeWeapon2);
+	PlayerInputComponent->BindAction("weaponUp", IE_Pressed, this, &APlayerCharacter::ChangeWeaponUp);
+	PlayerInputComponent->BindAction("weaponDown", IE_Pressed, this, &APlayerCharacter::ChangeWeaponDown);
 }
 
 
@@ -168,12 +170,21 @@ void APlayerCharacter::StopAim()
 
 void APlayerCharacter::ChangeWeapon1() {
 	Weapon->changeWeapon(0);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Shootgun")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Shootgun")));
 }
 
 void APlayerCharacter::ChangeWeapon2() {
 	Weapon->changeWeapon(1);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rifle")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rifle")));
+}
+void APlayerCharacter::ChangeWeaponUp() {
+	Weapon->changeWeapon(true);
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Shootgun")));
+}
+
+void APlayerCharacter::ChangeWeaponDown() {
+	Weapon->changeWeapon(false);
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rifle")));
 }
 
 void APlayerCharacter::Cam_PitchAxis(float AxisValue) {
@@ -213,6 +224,13 @@ void APlayerCharacter::shoot() {
 		Weapon->shooted();
 		GetWorld()->GetTimerManager().SetTimer(shootTimerHandle, this, &APlayerCharacter::rayShoot, 0.2f, true);
 	}
+	//Shake camera
+	recoil();
+
+}
+
+void APlayerCharacter::recoil() {	
+	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(Weapon->getShake(), 0.5f);
 }
 
 void APlayerCharacter::reload(){

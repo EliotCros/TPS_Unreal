@@ -55,7 +55,8 @@ void AWeaponV3::changeWeapon(int weapon){
 
 void AWeaponV3::changeWeapon(bool scroll){
 	int nextWeapon = (int)currentWeapon + (scroll) ? 1 : -1;
-	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), nextWeapon));
+
 	if (nextWeapon >= (int)f_Weapon && nextWeapon <= (int)l_Weapon) {
 		currentWeapon = (WeaponType)nextWeapon;
 	}else if (nextWeapon < (int)f_Weapon) {
@@ -63,6 +64,8 @@ void AWeaponV3::changeWeapon(bool scroll){
 	}else if (nextWeapon > (int)l_Weapon) {
 		currentWeapon = f_Weapon;
 	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, weaponlist[(int)currentWeapon].name);
 }
 
 void AWeaponV3::shooted(){
@@ -97,3 +100,7 @@ int AWeaponV3::GetNbBullet() {
 	return weaponlist[(int)currentWeapon].nbBullet;
 }
 
+
+TSubclassOf <UCameraShakeBase> AWeaponV3::getShake() {
+	return weaponlist[(int)currentWeapon].weaponShake;
+}

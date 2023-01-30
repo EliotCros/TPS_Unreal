@@ -70,13 +70,16 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float camSpeed = 7.5f;
-
+	UPROPERTY(EditAnywhere)
+		TSubclassOf < UCameraShakeBase > ShakeClass;
 
 
 
 	//raycast stuff
 	UFUNCTION()
 		void shoot();
+	UFUNCTION()
+		void recoil();
 	bool isShooting;
 
 	FHitResult camhit;
@@ -104,8 +107,11 @@ public:
 
 	void ChangeWeapon1();
 	void ChangeWeapon2();
+	void ChangeWeaponUp();
+	void ChangeWeaponDown();
 	FVector MuzzleLocation;
 	FVector ForwardAim;
 
 	void reload();
+	
 };

@@ -35,6 +35,8 @@ struct FWeapon {
 		float fireRate;
 	UPROPERTY(EditAnywhere)
 		int nbBullet;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf <UCameraShakeBase> weaponShake;
 };
 
 
@@ -80,9 +82,12 @@ public:
 
 	int GetNbBullet();
 
-	WeaponType currentWeapon = WeaponType::RIFLE;
+	TSubclassOf <UCameraShakeBase> getShake();
 
-	WeaponType f_Weapon = WeaponType::SHOOTGUN;
-	WeaponType l_Weapon = WeaponType::RIFLE;
+	WeaponType currentWeapon = WeaponType::RIFLE;
+	UPROPERTY(EditAnywhere)
+	WeaponType f_Weapon = WeaponType::RIFLE;
+	UPROPERTY(EditAnywhere)
+	WeaponType l_Weapon = WeaponType::SHOOTGUN;
 
 };

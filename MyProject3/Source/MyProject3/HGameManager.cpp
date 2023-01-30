@@ -26,7 +26,7 @@ void AHGameManager::Tick(float DeltaTime)
 
 	if (runTimer) {
 		elapsedTime += DeltaTime;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(elapsedTime));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(elapsedTime));
 	}
 	if (lastManager != nullptr) {
 		if (lastManager->finished) {
@@ -48,7 +48,7 @@ void AHGameManager::reset(){
 
 void AHGameManager::displayScore() {
 	runTimer = false;
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), pointCount));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), pointCount));
 }
 
 void AHGameManager::getPoint(int point){

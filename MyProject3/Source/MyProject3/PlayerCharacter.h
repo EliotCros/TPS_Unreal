@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
@@ -73,6 +74,8 @@ public:
 	//raycast stuff
 	UFUNCTION()
 		void shoot();
+
+
 	FHitResult camhit;
 	FVector Startcam;
 	FVector ForwardVectorCam;

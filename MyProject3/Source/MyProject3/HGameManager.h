@@ -3,20 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "TargetV2.h"
+#include "Target.h"
+#include "TargetManager.h"
 #include "GameFramework/Actor.h"
-#include "TargetManager.generated.h"
-
-
+#include "HGameManager.generated.h"
 
 UCLASS()
-class MYPROJECT3_API ATargetManager : public AActor
+class MYPROJECT3_API AHGameManager : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ATargetManager();
+	AHGameManager();
 
 protected:
 	// Called when the game starts or when spawned
@@ -27,23 +26,26 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 
-	UPROPERTY(EditAnywhere)
-		TArray<ATargetV2*> targetList;
-	UPROPERTY(EditAnywhere)
-		ATargetManager* parentManager;
-
-	bool finished = false;
-	bool active = false;
-
-	void start();//raise the target
-	bool testTarget();//test if there is at least one target alive
-	bool isFinished();
 
 	UFUNCTION()
-		int targetCount();
+		void start();
 
 	UFUNCTION()
 		void reset();
+
+	UFUNCTION()
+		void displayScore();
+	UFUNCTION()
+		void getPoint(int point);
+	
+
+	UPROPERTY(EditAnywhere)
+		ATargetManager* lastManager;
+
+	int pointCount = 0;
+
+	float elapsedTime = -1.0f;
+	bool runTimer = false;
 
 
 };

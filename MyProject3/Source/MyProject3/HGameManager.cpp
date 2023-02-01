@@ -1,7 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#pragma once
 
 #include "HGameManager.h"
+#include "Subsystems/PanelExtensionSubsystem.h"
+#include "Blueprint/UserWidget.h"
+#include <math.h>
+
+
 
 // Sets default values
 AHGameManager::AHGameManager()
@@ -16,6 +22,19 @@ void AHGameManager::BeginPlay()
 {
 	Super::BeginPlay();
 	Tags.Add(FName("GameManager"));
+
+	PointInstance = CreateWidget<UUserWidget>(GetWorld(), Point);
+	PointInstance->AddToViewport();
+
+	TimerInstance = CreateWidget<UUserWidget>(GetWorld(), timer);
+	TimerInstance->AddToViewport();
+
+	score = Cast<Uscore>(PointInstance);
+	time = Cast<Utimer>(TimerInstance);
+
+	score->SetPoint(pointCount);
+	time->SetTime(elapsedTime);
+
 	start();
 }
 
@@ -33,6 +52,18 @@ void AHGameManager::Tick(float DeltaTime)
 			displayScore();
 		}
 	}
+	float ok = elapsedTime * 100;
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(ok));
+	int ok2 = (int)ok % 100;
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(ok2));
+	float ok3 = (float)(ok - ok2) / 100;
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(ok3));
+
+	float ok4 = (float)(int)elapsedTime + (float)ok2 / 100;
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(ok4));
+
+
+	time->SetTime(ok4);
 }
 
 void AHGameManager::start(){
@@ -53,5 +84,7 @@ void AHGameManager::displayScore() {
 
 void AHGameManager::getPoint(int point){
 	pointCount += point;
+	score->SetPoint(pointCount);
+
 }
 

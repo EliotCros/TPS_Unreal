@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Target.h"
+#include "timer.h"
 #include "TargetManager.h"
 #include "GameFramework/Actor.h"
+#include "score.h"
 #include "HGameManager.generated.h"
 
 UCLASS()
@@ -38,14 +40,29 @@ public:
 	UFUNCTION()
 		void getPoint(int point);
 	
-
 	UPROPERTY(EditAnywhere)
 		ATargetManager* lastManager;
+	
 
 	int pointCount = 0;
 
 	float elapsedTime = -1.0f;
 	bool runTimer = false;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> Point;
+	UUserWidget* PointInstance;
+
+	UPROPERTY(EditAnywhere)
+		Uscore* score;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> timer;
+	UUserWidget* TimerInstance;
+
+	UPROPERTY(EditAnywhere)
+		Utimer* time;
+	
 
 
 };

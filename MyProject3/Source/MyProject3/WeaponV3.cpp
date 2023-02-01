@@ -3,6 +3,7 @@
 
 #include "WeaponV3.h"
 
+
 AWeaponV3::AWeaponV3()
 {
 }
@@ -38,6 +39,10 @@ void AWeaponV3::usedClipAmmo(){
 float AWeaponV3::getSpread(){
 	return weaponlist[(int)currentWeapon].spread;
 }
+
+/*UTexture2D AWeaponV3::GetImage() {
+	return weaponlist[(int)currentWeapon].image;
+}*/
 
 float AWeaponV3::getFireRate(){
 	return weaponlist[(int)currentWeapon].fireRate;

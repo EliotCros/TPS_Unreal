@@ -35,6 +35,8 @@ struct FWeapon {
 		float fireRate;
 	UPROPERTY(EditAnywhere)
 		int nbBullet;
+	//UPROPERTY(EditAnywhere)
+	//	UTexture2D image;
 	UPROPERTY(EditAnywhere)
 		TSubclassOf <UCameraShakeBase> weaponShake;
 };
@@ -81,6 +83,7 @@ public:
 	void getNewAmmo(int weapon, int Quantity);
 
 	int GetNbBullet();
+	UTexture2D GetImage();
 
 	TSubclassOf <UCameraShakeBase> getShake();
 

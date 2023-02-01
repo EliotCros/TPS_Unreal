@@ -55,8 +55,7 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-
+	OnActorBeginOverlap.AddDynamic(this, &APlayerCharacter::WalkOnAmmo);
 }
 
 // Called every frame
@@ -261,6 +260,15 @@ void APlayerCharacter::reload(){
 	Weapon->reload();
 }
 
+void APlayerCharacter::WalkOnAmmo(AActor* MyOverlappedActor, AActor* OtherActor) {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), 1));
+
+	if (IAmmoInterface * iAmmo = Cast<IAmmoInterface>(OtherActor)) {
+		Weapon->getNewAmmo(iAmmo->getWeaponType(), iAmmo->ammoCount());
+	}
+}
+
+
 FVector APlayerCharacter::recoil(FVector aim, float offset_aim) {
 
 	FRotator rot = aim.Rotation();
@@ -288,27 +296,27 @@ void APlayerCharacter::rayShoot() {
 	Startplayer = GetMesh()->GetSocketLocation("Muzzle_01");
 	
 	if (GetWorld()->LineTraceSingleByChannel(camhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams)) {
-
+		/*
 		if (camhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
 			IMyInterfaceShootable::Execute_ProcessEvent(camhit.GetActor(), camhit.GetActor()->GetFName(), camhit.Distance);
+		}*/
+		ForwardAim = FVector(camhit.Location.X - Startplayer.X, camhit.Location.Y - Startplayer.Y, camhit.Location.Z - Startplayer.Z);
+		FVector rc = recoil(ForwardAim, Weapon->getSpread());
+		rc.Normalize();
+		FVector hitpoint = Startplayer +  rc * 100000.0f;
+
+		if (GetWorld()->LineTraceSingleByChannel(Playerhit, Startplayer, hitpoint, ECC_WorldStatic, CollisionParams)) {
+
+			if (Playerhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
+				IMyInterfaceShootable::Execute_ProcessEvent(Playerhit.GetActor(), Playerhit.GetActor()->GetFName(), Playerhit.Distance);
+			}
 		}
+		DrawDebugLine(GetWorld(), Startplayer, hitpoint, FColor::Red, false, 10, 0, 1);
+		FTransform tr;
+		tr.SetLocation(Playerhit.Location);
+		UGameplayStatics::SpawnEmitterAtLocation(OurCamera->GetWorld(), PShoot, tr, true);
 	}
 
-	ForwardAim = FVector(camhit.Location.X - Startplayer.X, camhit.Location.Y - Startplayer.Y, camhit.Location.Z - Startplayer.Z);
-	FVector rc = recoil(ForwardAim, Weapon->getSpread());
-	rc.Normalize();
-	FVector hitpoint = Startplayer +  rc * 100000.0f;
-
-	if (GetWorld()->LineTraceSingleByChannel(Playerhit, Startplayer, hitpoint, ECC_WorldStatic, CollisionParams)) {
-
-		if (Playerhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
-			IMyInterfaceShootable::Execute_ProcessEvent(Playerhit.GetActor(), Playerhit.GetActor()->GetFName(), Playerhit.Distance);
-		}
-	}
-	DrawDebugLine(GetWorld(), Startplayer, hitpoint, FColor::Red, false, 10, 0, 1);
-	FTransform tr;
-	tr.SetLocation(Playerhit.Location);
-	UGameplayStatics::SpawnEmitterAtLocation(OurCamera->GetWorld(), PShoot, tr, true);
 
 
 }

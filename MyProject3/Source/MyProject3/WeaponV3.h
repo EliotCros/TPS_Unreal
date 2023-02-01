@@ -78,7 +78,7 @@ public:
 
 	bool reload();
 
-	void getNewAmmo(int weapon, int Quantity);
+	void getNewAmmo(WeaponType weapon, int Quantity);
 
 	int GetNbBullet();
 

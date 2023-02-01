@@ -6,6 +6,8 @@
 
 #include "GameFramework/Character.h"
 #include "Target.h"
+#include "AmmoCrate.h"
+
 #include "PlayerCharacter.generated.h"
 
 class UNiagaraSystem;
@@ -121,5 +123,9 @@ public:
 	FVector ForwardAim;
 
 	void reload();
+
+
+	void WalkOnAmmo(AActor* MyOverlappedActor, AActor* OtherActor);
+
 	
 };

@@ -9,6 +9,8 @@
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Particles/ParticleSystemComponent.h"
+#include <Kismet/GameplayStatics.h>
 
 
 float RandomFloat(float a, float b) {
@@ -304,5 +306,9 @@ void APlayerCharacter::rayShoot() {
 		}
 	}
 	DrawDebugLine(GetWorld(), Startplayer, hitpoint, FColor::Red, false, 10, 0, 1);
+	FTransform tr;
+	tr.SetLocation(Playerhit.Location);
+	UGameplayStatics::SpawnEmitterAtLocation(OurCamera->GetWorld(), PShoot, tr, true);
+
 
 }

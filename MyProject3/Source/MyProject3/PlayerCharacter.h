@@ -78,6 +78,11 @@ public:
 	//raycast stuff
 	UFUNCTION()
 		void shoot();
+	void startShoot();
+	void stopShoot();
+	void tryShoot();
+	void startShootTimer();
+	void stopShootTimer();
 	UFUNCTION()
 		void recoil();
 	bool isShooting;
@@ -101,7 +106,6 @@ public:
 
 	void StartAim();
 	void StopAim();
-	void shootReleased();
 	void rayShoot();
 	bool isAim;
 

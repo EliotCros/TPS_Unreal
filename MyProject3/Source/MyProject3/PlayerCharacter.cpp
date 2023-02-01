@@ -107,8 +107,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 
 
-	PlayerInputComponent->BindAction("shoot", IE_Pressed, this, &APlayerCharacter::shoot);
-	PlayerInputComponent->BindAction("shoot", IE_Released, this, &APlayerCharacter::shootReleased);
+	PlayerInputComponent->BindAction("shoot", IE_Pressed, this, &APlayerCharacter::startShoot);
+	PlayerInputComponent->BindAction("shoot", IE_Released, this, &APlayerCharacter::stopShoot);
 
 	PlayerInputComponent->BindAction("sprint", IE_Pressed, this, &APlayerCharacter::StartSprint);
 	PlayerInputComponent->BindAction("sprint", IE_Released, this, &APlayerCharacter::StopSprint);
@@ -208,30 +208,52 @@ void APlayerCharacter::StopSprint(){
 	isSPrinting = false;
 
 }
-void APlayerCharacter::shootReleased() {
-	isShooting = false;
-	GetWorld()->GetTimerManager().ClearTimer(shootTimerHandle);
 
-}
+#pragma region Shooting
+
+/************************SHOOOTINNG****************/
 
 void APlayerCharacter::shoot() {
 	if (Weapon->canShoot()) {
-	 
-		for (size_t i = 0; i < Weapon->GetNbBullet(); i++)
-		{
+		for (size_t i = 0; i < Weapon->GetNbBullet(); i++) {
 			rayShoot();
 		}
 		Weapon->shooted();
-		GetWorld()->GetTimerManager().SetTimer(shootTimerHandle, this, &APlayerCharacter::rayShoot, 0.2f, true);
+		//Shake camera
+		recoil();
 	}
-	//Shake camera
-	recoil();
-
 }
 
-void APlayerCharacter::recoil() {	
+void APlayerCharacter::recoil() {
 	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(Weapon->getShake(), 0.5f);
 }
+
+void APlayerCharacter::startShoot() {
+	isShooting = true;
+	tryShoot();
+}
+void APlayerCharacter::stopShoot() {
+	isShooting = false;
+}
+
+void APlayerCharacter::tryShoot() {
+	if (isShooting) {
+		if (GetWorld()->GetTimerManager().GetTimerRemaining(shootTimerHandle) == -1 || GetWorld()->GetTimerManager().GetTimerRemaining(shootTimerHandle) == 0) {
+
+			shoot();
+			startShootTimer();
+		}
+	}
+}
+
+void APlayerCharacter::startShootTimer() {
+	GetWorld()->GetTimerManager().SetTimer(shootTimerHandle, this, &APlayerCharacter::tryShoot, Weapon->getFireRate(), false);
+}
+void APlayerCharacter::stopShootTimer() {
+	GetWorld()->GetTimerManager().ClearTimer(shootTimerHandle);
+}
+/*******************************************************/
+#pragma endregion
 
 void APlayerCharacter::reload(){
 	Weapon->reload();

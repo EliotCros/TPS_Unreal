@@ -4,7 +4,6 @@
 #include "PlayerCharacter.h"
 #include "target.h"
 #include "shoot.h"
-#include "WeaponV3.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/CharacterMovementComponent.h"
@@ -55,17 +54,12 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OnActorBeginOverlap.AddDynamic(this, &APlayerCharacter::WalkOnAmmo);
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (Weapon == nullptr) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("okkk")));
-	}
 
 
 	if (!isSPrinting && CharacterMove->MaxWalkSpeed > 600.0f) {
@@ -88,6 +82,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 		CameraSpringArm->SetWorldRotation(NewRotation);
 		float p = NewRotation.Pitch;
 	}
+
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld : %lld // %lld"), Weapon->getCurrentClip(), Weapon->getMaxClip(), Weapon->getCurrentAmmo()));
+
+
+
 
 }
 
@@ -260,12 +260,9 @@ void APlayerCharacter::reload(){
 	Weapon->reload();
 }
 
-void APlayerCharacter::WalkOnAmmo(AActor* MyOverlappedActor, AActor* OtherActor) {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), 1));
-
-	if (IAmmoInterface * iAmmo = Cast<IAmmoInterface>(OtherActor)) {
-		Weapon->getNewAmmo(iAmmo->getWeaponType(), iAmmo->ammoCount());
-	}
+void APlayerCharacter::WalkOnAmmo(int count, WeaponType type) {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), 15));
+	Weapon->getNewAmmo(type, count);
 }
 
 

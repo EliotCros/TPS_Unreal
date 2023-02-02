@@ -7,6 +7,7 @@
 #include "AmmoInterface.h"
 #include "WeaponV3.h"
 #include "Components/SphereComponent.h"
+#include "PlayerCharacter.h"
 #include "AmmoCrate.generated.h"
 
 UCLASS()

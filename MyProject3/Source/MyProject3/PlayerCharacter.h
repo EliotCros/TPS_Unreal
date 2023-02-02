@@ -6,7 +6,7 @@
 
 #include "GameFramework/Character.h"
 #include "Target.h"
-#include "AmmoCrate.h"
+#include "WeaponV3.h"
 
 #include "PlayerCharacter.generated.h"
 
@@ -125,7 +125,7 @@ public:
 	void reload();
 
 
-	void WalkOnAmmo(AActor* MyOverlappedActor, AActor* OtherActor);
+	void WalkOnAmmo(int count, WeaponType type);
 
 	
 };

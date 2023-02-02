@@ -44,6 +44,12 @@ void AAmmoCrate::WalkOnAmmo(AActor* MyOverlappedActor, AActor* OtherActor)
 
 void AAmmoCrate::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), 2));
+		APlayerCharacter* chara = Cast<APlayerCharacter>(OtherActor);
+		if (chara != nullptr) {
+			chara->WalkOnAmmo(Count, ammoType);
+			Destroy();
+		}
+
 
 }
 

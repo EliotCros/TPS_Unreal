@@ -309,6 +309,8 @@ void APlayerCharacter::reload(){
 void APlayerCharacter::WalkOnAmmo(int count, WeaponType type) {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), 15));
 	Weapon->getNewAmmo(type, count);
+	ammo->SetAmmo(Weapon->getCurrentAmmo());
+
 }
 
 

@@ -46,6 +46,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		class UParticleSystem* PShoot;
+	UPROPERTY(EditAnywhere)
+		class UParticleSystem* Pfire;
 
 	UFUNCTION()
 		void MoveForward(float Value);

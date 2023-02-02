@@ -4,20 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "score.generated.h"
+#include "timer.generated.h"
 
 
 UCLASS(Abstract)
-class MYPROJECT3_API Uscore : public UUserWidget
+class MYPROJECT3_API Utimer : public UUserWidget
 {
 	GENERATED_BODY()
 
 protected:
 	UPROPERTY(meta = (BindWidget))
-		class UTextBlock* points;
-	
+		class UTextBlock* time;
+
 	void NativeConstruct();
 public:
-	void SetPoint(int point);
+	void SetTime(float curtime);
 
 };

@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "MyInterfaceShootable.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/SplineComponent.h"
+
+#include "Components/TimelineComponent.h"
 #include "TargetV2.generated.h"
 
 
@@ -43,6 +46,7 @@ public:
 		void emitPoint();
 
 	bool isMoving = false;
+	UPROPERTY(EditAnywhere)
 	bool raised = false;
 	bool fallen = false;
 	bool isDead = false;
@@ -62,11 +66,37 @@ public:
 	float startRot;
 	float targetRotation = 0;
 	UPROPERTY(EditAnywhere)
-		float FallingAngle = 90.0f;
+		float FallingAngle = -90.0f;
 	UPROPERTY(EditAnywhere)
 		float RotatingSpeed = 90.0f;
 
 	UPROPERTY(EditAnywhere)
 		int pointVal = 1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spline", meta = (AllowPrivateAccess = "true"))
+		UStaticMeshComponent* MeshComponent;
+
+
+	/// <summary>
+	/// Spline
+	/// </summary>
+	UPROPERTY(EditAnywhere)
+		bool onRail = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spline", meta = (AllowPrivateAccess = "true"))
+		USplineComponent* trajectory;
+	UPROPERTY(EditAnywhere)
+		float railSpeed = 0.2f;
+	UPROPERTY(EditAnywhere)
+		bool playOnce = false;
+
+	UFUNCTION()
+		void ProcessMovementTimeline(float Value);
+	UFUNCTION()
+		void OnEndMovementTimeline();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Spline")
+		UCurveFloat* MovementCurve;
+
+	FTimeline MovementTimeline;
 
 };

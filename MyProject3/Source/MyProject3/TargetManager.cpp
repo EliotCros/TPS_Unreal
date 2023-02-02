@@ -10,7 +10,6 @@ ATargetManager::ATargetManager()
 	PrimaryActorTick.bCanEverTick = true;
 	Collider = CreateDefaultSubobject<USphereComponent>(FName("Collider"));
 
-
 }
 
 // Called when the game starts or when spawned

@@ -117,6 +117,7 @@ public:
 	void StopAim();
 	void rayShoot();
 	bool isAim;
+	void startPlayer();
 
 	void ChangeWeapon1();
 	void ChangeWeapon2();

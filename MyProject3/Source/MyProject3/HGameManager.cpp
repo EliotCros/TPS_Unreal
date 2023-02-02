@@ -36,6 +36,8 @@ void AHGameManager::BeginPlay()
 	time->SetTime(elapsedTime);
 
 	start();
+	FViewTargetTransitionParams Params;
+	GetController()->SetViewTarget(NewCamera, Params);
 }
 
 // Called every frame

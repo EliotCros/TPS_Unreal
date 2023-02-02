@@ -22,7 +22,6 @@ float RandomFloat(float a, float b) {
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
-	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -56,6 +55,10 @@ void APlayerCharacter::BeginPlay()
 
 }
 
+void APlayerCharacter::startPlayer() {
+	AutoPossessPlayer = EAutoReceiveInput::Player0;
+
+}
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {

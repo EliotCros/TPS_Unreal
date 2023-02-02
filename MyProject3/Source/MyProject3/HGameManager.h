@@ -8,6 +8,7 @@
 #include "TargetManager.h"
 #include "GameFramework/Actor.h"
 #include "score.h"
+#include "PlayerCharacter.h"
 #include "HGameManager.generated.h"
 
 UCLASS()
@@ -40,6 +41,9 @@ public:
 	UFUNCTION()
 		void getPoint(int point);
 	
+	UPROPERTY(EditAnywhere)
+		APlayerCharacter* player;
+
 	UPROPERTY(EditAnywhere)
 		ATargetManager* lastManager;
 	

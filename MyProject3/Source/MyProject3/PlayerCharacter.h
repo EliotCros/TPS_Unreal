@@ -6,6 +6,7 @@
 
 #include "GameFramework/Character.h"
 #include "Target.h"
+#include "ammo.h"
 #include "WeaponV3.h"
 
 #include "PlayerCharacter.generated.h"
@@ -131,5 +132,12 @@ public:
 
 	void WalkOnAmmo(int count, WeaponType type);
 
-	
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> ammowidget;
+	UUserWidget* ammoInstnace;
+
+	UPROPERTY(EditAnywhere)
+		Uammo* ammo;
+
 };

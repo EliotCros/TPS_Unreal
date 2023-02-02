@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Target.h"
 #include "timer.h"
+#include "ammo.h"
 #include "TargetManager.h"
 #include "GameFramework/Actor.h"
 #include "score.h"
@@ -66,7 +67,16 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		Utimer* time;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> ammowidget;
+	UUserWidget* ammoInstnace;
+
+	UPROPERTY(EditAnywhere)
+		Uammo* ammo;
+
+};
 	
 
 
-};
+

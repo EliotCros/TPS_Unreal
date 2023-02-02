@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "PlayerCharacter.h"
 #include "Math/UnrealMathUtility.h"
+#include "Subsystems/PanelExtensionSubsystem.h"
+#include "Blueprint/UserWidget.h"
 #include "target.h"
 #include "shoot.h"
 #include "GameFramework/Pawn.h"
@@ -53,6 +55,24 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+
+	ammoInstnace = CreateWidget<UUserWidget>(GetWorld(), ammowidget);
+	
+
+	if (ammoInstnace != nullptr) {
+		ammoInstnace->AddToViewport();
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), 4));
+	}
+
+
+	ammo = Cast<Uammo>(ammoInstnace);
+	if (ammo != nullptr) {
+		ammo->SetClip(Weapon->getMaxClip());
+		ammo->SetAmmo(Weapon->getCurrentAmmo());
+		ammo->SetCurClip(Weapon->getCurrentClip());
+	}
 }
 
 void APlayerCharacter::startPlayer() {
@@ -84,6 +104,13 @@ void APlayerCharacter::Tick(float DeltaTime)
 		CameraSpringArm->SetWorldRotation(NewRotation);
 		float p = NewRotation.Pitch;
 	}
+
+
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld : %lld // %lld"), Weapon->getCurrentClip(), Weapon->getMaxClip(), Weapon->getCurrentAmmo()));
+
+
+
+
 }
 
 // Called to bind functionality to input
@@ -166,17 +193,36 @@ void APlayerCharacter::StopAim()
 
 void APlayerCharacter::ChangeWeapon1() {
 	Weapon->changeWeapon(0);
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Shootgun")));
+	ammo->SetClip(Weapon->getMaxClip());
+	ammo->SetAmmo(Weapon->getCurrentAmmo());
+	ammo->SetCurClip(Weapon->getCurrentClip());
+
 }
 
 void APlayerCharacter::ChangeWeapon2() {
-	Weapon->changeWeapon(1);
+	Weapon->changeWeapon(1);	
+	ammo->SetClip(Weapon->getMaxClip());
+	ammo->SetAmmo(Weapon->getCurrentAmmo());
+	ammo->SetCurClip(Weapon->getCurrentClip());
+
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rifle")));
 }
 void APlayerCharacter::ChangeWeaponUp() {
 	Weapon->changeWeapon(true);
+	ammo->SetClip(Weapon->getMaxClip());	
+	ammo->SetAmmo(Weapon->getCurrentAmmo());
+	ammo->SetCurClip(Weapon->getCurrentClip());
+
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Shootgun")));
 }
 
 void APlayerCharacter::ChangeWeaponDown() {
 	Weapon->changeWeapon(false);
+	ammo->SetClip(Weapon->getMaxClip());
+	ammo->SetAmmo(Weapon->getCurrentAmmo());
+	ammo->SetCurClip(Weapon->getCurrentClip());
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rifle")));
 }
 
 void APlayerCharacter::Cam_PitchAxis(float AxisValue) {
@@ -212,6 +258,7 @@ void APlayerCharacter::shoot() {
 		}
 		ShootSound();
 		Weapon->shooted();
+		ammo->SetCurClip(Weapon->getCurrentClip());
 		//Shake camera
 		recoil();
 	}
@@ -266,10 +313,14 @@ void APlayerCharacter::stopShootTimer() {
 
 void APlayerCharacter::reload(){
 	Weapon->reload();
+	ammo->SetAmmo(Weapon->getCurrentAmmo());
+	ammo->SetCurClip(Weapon->getCurrentClip());
 }
 
 void APlayerCharacter::WalkOnAmmo(int count, WeaponType type) {
 	Weapon->getNewAmmo(type, count);
+	ammo->SetAmmo(Weapon->getCurrentAmmo());
+
 }
 
 

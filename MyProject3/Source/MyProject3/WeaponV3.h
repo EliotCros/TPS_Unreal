@@ -39,6 +39,8 @@ struct FWeapon {
 	//	UTexture2D image;
 	UPROPERTY(EditAnywhere)
 		TSubclassOf <UCameraShakeBase> weaponShake;
+	UPROPERTY(EditAnywhere)
+		USoundBase* ShootSound;
 };
 
 
@@ -84,6 +86,8 @@ public:
 
 	int GetNbBullet();
 	UTexture2D GetImage();
+
+	USoundBase* getSound();
 
 	TSubclassOf <UCameraShakeBase> getShake();
 

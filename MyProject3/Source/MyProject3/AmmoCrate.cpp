@@ -17,7 +17,6 @@ AAmmoCrate::AAmmoCrate()
 void AAmmoCrate::BeginPlay()
 {
 	Super::BeginPlay();
-	//OnActorBeginOverlap.AddDynamic(this, &AAmmoCrate::WalkOnAmmo);
 	Collider->OnComponentBeginOverlap.AddDynamic(this, &AAmmoCrate::OnBeginOverlap);
 
 }
@@ -35,11 +34,6 @@ int AAmmoCrate::getAmmoCount(){
 
 WeaponType AAmmoCrate::getWeaponType(){
 	return ammoType;
-}
-
-void AAmmoCrate::WalkOnAmmo(AActor* MyOverlappedActor, AActor* OtherActor)
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), 1));
 }
 
 void AAmmoCrate::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {

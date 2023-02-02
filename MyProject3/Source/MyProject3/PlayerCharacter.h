@@ -93,6 +93,7 @@ public:
 	void stopShootTimer();
 	UFUNCTION()
 		void recoil();
+	void ShootSound();
 	bool isShooting;
 
 	FHitResult camhit;

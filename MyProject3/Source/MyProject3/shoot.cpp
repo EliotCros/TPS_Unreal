@@ -1,5 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("le seum"));
 
 
 #include "shoot.h"
@@ -29,7 +28,6 @@ void Ashoot::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::SanitizeFloat(alacon));
 	if (CameraRay == nullptr) {
 	}
 	shoot();

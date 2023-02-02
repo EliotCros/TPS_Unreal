@@ -33,7 +33,6 @@ public:
 
 	virtual int getAmmoCount();
 	virtual WeaponType getWeaponType();
-	void WalkOnAmmo(AActor* MyOverlappedActor, AActor* OtherActor);
 
 
 	USphereComponent* Collider;

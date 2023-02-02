@@ -46,7 +46,6 @@ void AMyPawn::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Startplayer = GetActorLocation();
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, this->GetActorLocation().ToString());
 
 	if (!CurrentVelocity.IsZero()){
 		FVector NewLocation = (new FVector())->Zero();

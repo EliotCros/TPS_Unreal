@@ -82,13 +82,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 		CameraSpringArm->SetWorldRotation(NewRotation);
 		float p = NewRotation.Pitch;
 	}
-
-
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld : %lld // %lld"), Weapon->getCurrentClip(), Weapon->getMaxClip(), Weapon->getCurrentAmmo()));
-
-
-
-
 }
 
 // Called to bind functionality to input
@@ -171,21 +164,17 @@ void APlayerCharacter::StopAim()
 
 void APlayerCharacter::ChangeWeapon1() {
 	Weapon->changeWeapon(0);
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Shootgun")));
 }
 
 void APlayerCharacter::ChangeWeapon2() {
 	Weapon->changeWeapon(1);
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rifle")));
 }
 void APlayerCharacter::ChangeWeaponUp() {
 	Weapon->changeWeapon(true);
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Shootgun")));
 }
 
 void APlayerCharacter::ChangeWeaponDown() {
 	Weapon->changeWeapon(false);
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rifle")));
 }
 
 void APlayerCharacter::Cam_PitchAxis(float AxisValue) {
@@ -219,11 +208,19 @@ void APlayerCharacter::shoot() {
 		for (size_t i = 0; i < Weapon->GetNbBullet(); i++) {
 			rayShoot();
 		}
+		ShootSound();
 		Weapon->shooted();
 		//Shake camera
 		recoil();
 	}
 }
+
+void APlayerCharacter::ShootSound() {
+//	FTransform tr2 = GetMesh()->GetSocketTransform("Muzzle_01");
+	UGameplayStatics::PlaySound2D(OurCamera->GetWorld(), Weapon->getSound(), 0.5f, 0.5f, 0);
+
+}
+
 
 void APlayerCharacter::recoil() {
 	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(Weapon->getShake(), 0.5f);
@@ -270,7 +267,6 @@ void APlayerCharacter::reload(){
 }
 
 void APlayerCharacter::WalkOnAmmo(int count, WeaponType type) {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), 15));
 	Weapon->getNewAmmo(type, count);
 }
 

@@ -59,12 +59,7 @@ void AWeaponV3::changeWeapon(int weapon){
 }
 
 void AWeaponV3::changeWeapon(bool scroll){
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), (int)currentWeapon));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), (int)l_Weapon));
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), (int)f_Weapon));
-
 	int nextWeapon = (int)currentWeapon + ((scroll) ? 1 : -1);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), nextWeapon));
 
 	if (nextWeapon >= (int)f_Weapon && nextWeapon <= (int)l_Weapon) {
 		currentWeapon = (WeaponType)nextWeapon;
@@ -74,7 +69,6 @@ void AWeaponV3::changeWeapon(bool scroll){
 		currentWeapon = f_Weapon;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), (int)currentWeapon));
 }
 
 void AWeaponV3::shooted(){
@@ -109,6 +103,11 @@ int AWeaponV3::GetNbBullet() {
 	return weaponlist[(int)currentWeapon].nbBullet;
 }
  
+
+USoundBase* AWeaponV3::getSound()
+{
+	return weaponlist[(int)currentWeapon].ShootSound;
+}
 
 TSubclassOf <UCameraShakeBase> AWeaponV3::getShake() {
 	return weaponlist[(int)currentWeapon].weaponShake;

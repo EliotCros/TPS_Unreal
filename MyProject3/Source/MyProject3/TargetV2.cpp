@@ -46,9 +46,7 @@ void ATargetV2::BeginPlay()
 
 void ATargetV2::ProcessEvent_Implementation(FName Name, float Float)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("target"));
 	killTarget();
-	//SetActorScale3D(FVector(GetActorScale.X * 1.05f));
 }
 
 // Called every frame
@@ -117,7 +115,6 @@ void ATargetV2::killTarget() {
 
 
 void ATargetV2::raise() {
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("raise"));
 	raised = true;
 	raising = true;
 	targetHeight = raisedHeight;

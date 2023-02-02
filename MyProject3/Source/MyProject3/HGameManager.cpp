@@ -45,25 +45,21 @@ void AHGameManager::Tick(float DeltaTime)
 
 	if (runTimer) {
 		elapsedTime += DeltaTime;
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(elapsedTime));
 	}
 	if (lastManager != nullptr) {
 		if (lastManager->finished) {
+
+
+			/******************************END OF GAME****************************/
 			displayScore();
 		}
 	}
-	float ok = elapsedTime * 100;
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(ok));
-	int ok2 = (int)ok % 100;
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(ok2));
-	float ok3 = (float)(ok - ok2) / 100;
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(ok3));
+	
 
-	float ok4 = (float)(int)elapsedTime + (float)ok2 / 100;
-//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::SanitizeFloat(ok4));
+	
 
 
-	time->SetTime(ok4);
+	time->SetTime((int)elapsedTime);
 }
 
 void AHGameManager::start(){
@@ -79,7 +75,6 @@ void AHGameManager::reset(){
 
 void AHGameManager::displayScore() {
 	runTimer = false;
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), pointCount));
 }
 
 void AHGameManager::getPoint(int point){

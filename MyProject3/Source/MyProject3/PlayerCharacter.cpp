@@ -4,7 +4,6 @@
 #include "PlayerCharacter.h"
 #include "target.h"
 #include "shoot.h"
-#include "WeaponV3.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h" 
 #include "GameFramework/CharacterMovementComponent.h"
@@ -55,18 +54,12 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (Weapon == nullptr) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("okkk")));
-	}
 
 
 	if (!isSPrinting && CharacterMove->MaxWalkSpeed > 600.0f) {
@@ -89,6 +82,12 @@ void APlayerCharacter::Tick(float DeltaTime)
 		CameraSpringArm->SetWorldRotation(NewRotation);
 		float p = NewRotation.Pitch;
 	}
+
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld : %lld // %lld"), Weapon->getCurrentClip(), Weapon->getMaxClip(), Weapon->getCurrentAmmo()));
+
+
+
 
 }
 
@@ -261,6 +260,12 @@ void APlayerCharacter::reload(){
 	Weapon->reload();
 }
 
+void APlayerCharacter::WalkOnAmmo(int count, WeaponType type) {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), 15));
+	Weapon->getNewAmmo(type, count);
+}
+
+
 FVector APlayerCharacter::recoil(FVector aim, float offset_aim) {
 
 	FRotator rot = aim.Rotation();
@@ -288,27 +293,27 @@ void APlayerCharacter::rayShoot() {
 	Startplayer = GetMesh()->GetSocketLocation("Muzzle_01");
 	
 	if (GetWorld()->LineTraceSingleByChannel(camhit, Startcam, EndCam, ECC_WorldStatic, CollisionParams)) {
-
+		/*
 		if (camhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
 			IMyInterfaceShootable::Execute_ProcessEvent(camhit.GetActor(), camhit.GetActor()->GetFName(), camhit.Distance);
+		}*/
+		ForwardAim = FVector(camhit.Location.X - Startplayer.X, camhit.Location.Y - Startplayer.Y, camhit.Location.Z - Startplayer.Z);
+		FVector rc = recoil(ForwardAim, Weapon->getSpread());
+		rc.Normalize();
+		FVector hitpoint = Startplayer +  rc * 100000.0f;
+
+		if (GetWorld()->LineTraceSingleByChannel(Playerhit, Startplayer, hitpoint, ECC_WorldStatic, CollisionParams)) {
+
+			if (Playerhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
+				IMyInterfaceShootable::Execute_ProcessEvent(Playerhit.GetActor(), Playerhit.GetActor()->GetFName(), Playerhit.Distance);
+			}
 		}
+		DrawDebugLine(GetWorld(), Startplayer, hitpoint, FColor::Red, false, 10, 0, 1);
+		FTransform tr;
+		tr.SetLocation(Playerhit.Location);
+		UGameplayStatics::SpawnEmitterAtLocation(OurCamera->GetWorld(), PShoot, tr, true);
 	}
 
-	ForwardAim = FVector(camhit.Location.X - Startplayer.X, camhit.Location.Y - Startplayer.Y, camhit.Location.Z - Startplayer.Z);
-	FVector rc = recoil(ForwardAim, Weapon->getSpread());
-	rc.Normalize();
-	FVector hitpoint = Startplayer +  rc * 100000.0f;
-
-	if (GetWorld()->LineTraceSingleByChannel(Playerhit, Startplayer, hitpoint, ECC_WorldStatic, CollisionParams)) {
-
-		if (Playerhit.GetActor()->GetClass()->ImplementsInterface(UMyInterfaceShootable::StaticClass())) {
-			IMyInterfaceShootable::Execute_ProcessEvent(Playerhit.GetActor(), Playerhit.GetActor()->GetFName(), Playerhit.Distance);
-		}
-	}
-	DrawDebugLine(GetWorld(), Startplayer, hitpoint, FColor::Red, false, 10, 0, 1);
-	FTransform tr;
-	tr.SetLocation(Playerhit.Location);
-	UGameplayStatics::SpawnEmitterAtLocation(OurCamera->GetWorld(), PShoot, tr, true);
 
 
 }

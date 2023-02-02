@@ -98,10 +98,10 @@ bool AWeaponV3::reload(){
 	return false;
 }
 
-void AWeaponV3::getNewAmmo(int weapon, int Quantity){
-	weaponlist[weapon].currentAmmo += Quantity;
-	if (weaponlist[weapon].currentAmmo > weaponlist[weapon].maxAmmo) {
-		weaponlist[weapon].currentAmmo = weaponlist[weapon].maxAmmo;
+void AWeaponV3::getNewAmmo(WeaponType weapon, int Quantity){
+	weaponlist[(int)weapon].currentAmmo += Quantity;
+	if (weaponlist[(int)weapon].currentAmmo > weaponlist[(int)weapon].maxAmmo) {
+		weaponlist[(int)weapon].currentAmmo = weaponlist[(int)weapon].maxAmmo;
 	}
 }
 

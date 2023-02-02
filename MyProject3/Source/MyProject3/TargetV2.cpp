@@ -75,7 +75,7 @@ void ATargetV2::Tick(float DeltaTime)
 
 
 void ATargetV2::killTarget() {
-	if (raised) {
+	if (raised && !isDead) {
 		Fallen();
 		isDead = true;
 		emitPoint();

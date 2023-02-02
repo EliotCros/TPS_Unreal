@@ -8,6 +8,8 @@ ATargetManager::ATargetManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	Collider = CreateDefaultSubobject<USphereComponent>(FName("Collider"));
+
 
 }
 
@@ -15,7 +17,8 @@ ATargetManager::ATargetManager()
 void ATargetManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	Collider->OnComponentBeginOverlap.AddDynamic(this, &ATargetManager::OnBeginOverlap);
+
 }
 
 // Called every frame
@@ -25,7 +28,7 @@ void ATargetManager::Tick(float DeltaTime)
 
 	if (!finished) {
 
-		if (!active) {
+		if (!active && (!needTrigger || needTrigger && boxCollided)) {
 			//START
 			if (parentManager == nullptr) {
 
@@ -88,3 +91,21 @@ void ATargetManager::reset() {
 	}
 }
 
+void ATargetManager::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%lld"), 5));
+	/*APlayerCharacter* chara = Cast<APlayerCharacter>(OtherActor);
+	if (chara != nullptr) {
+		chara->WalkOnAmmo(Count, ammoType);
+		Destroy();
+	}
+	*/
+
+	if (parentManager == nullptr) {
+
+		boxCollided = true;
+	}
+	else if (parentManager->isFinished()) {
+		boxCollided = true;
+
+	}
+}

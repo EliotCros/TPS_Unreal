@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "TargetV2.h"
 #include "GameFramework/Actor.h"
+#include "Components/SphereComponent.h"
+
 #include "TargetManager.generated.h"
 
 
@@ -30,6 +32,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		TArray<ATargetV2*> targetList;
 	UPROPERTY(EditAnywhere)
+		TArray<ATargetV2*> civilList;
+	UPROPERTY(EditAnywhere)
 		ATargetManager* parentManager;
 
 	bool finished = false;
@@ -45,5 +49,13 @@ public:
 	UFUNCTION()
 		void reset();
 
+	USphereComponent* Collider;
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UPROPERTY(EditAnywhere)
+	bool needTrigger = false;
+
+	bool boxCollided = false;
 
 };

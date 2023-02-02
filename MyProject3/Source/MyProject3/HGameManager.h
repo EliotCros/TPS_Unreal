@@ -52,7 +52,9 @@ public:
 	int pointCount = 0;
 
 	float elapsedTime = -1.0f;
-	bool runTimer = false;
+
+	UPROPERTY(EditAnywhere)
+		bool runTimer = false;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> Point;

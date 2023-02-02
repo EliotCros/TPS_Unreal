@@ -32,7 +32,6 @@ void AHGameManager::BeginPlay()
 	score = Cast<Uscore>(PointInstance);
 	time = Cast<Utimer>(TimerInstance);
 
-
 	score->SetPoint(pointCount);
 	time->SetTime(elapsedTime);
 

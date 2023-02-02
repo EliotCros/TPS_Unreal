@@ -26,11 +26,10 @@ void ATargetManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (!finished) {
-
+		
 		if (!active && (!needTrigger || needTrigger && boxCollided)) {
 			//START
 			if (parentManager == nullptr) {
-
 				start();
 			}else if (parentManager->isFinished()) {
 				bool t = parentManager->isFinished();

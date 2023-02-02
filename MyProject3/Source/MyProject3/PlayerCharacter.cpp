@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-#include "Math/UnrealMathUtility.h"
 #include "PlayerCharacter.h"
+#include "Math/UnrealMathUtility.h"
 #include "target.h"
 #include "shoot.h"
 #include "GameFramework/Pawn.h"
@@ -22,6 +21,7 @@ float RandomFloat(float a, float b) {
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
+	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -56,7 +56,6 @@ void APlayerCharacter::BeginPlay()
 }
 
 void APlayerCharacter::startPlayer() {
-	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 }
 // Called every frame

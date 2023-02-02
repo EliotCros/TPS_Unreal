@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "HGameManager.h"
 
 #include "TargetV2.h"
+#include "HGameManager.h"
 
 // Sets default values
 ATargetV2::ATargetV2()

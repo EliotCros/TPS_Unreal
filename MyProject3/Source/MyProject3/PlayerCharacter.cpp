@@ -305,10 +305,18 @@ void APlayerCharacter::rayShoot() {
 			IMyInterfaceShootable::Execute_ProcessEvent(Playerhit.GetActor(), Playerhit.GetActor()->GetFName(), Playerhit.Distance);
 		}
 	}
-	DrawDebugLine(GetWorld(), Startplayer, hitpoint, FColor::Red, false, 10, 0, 1);
+	//DrawDebugLine(GetWorld(), Startplayer, hitpoint, FColor::Red, false, 10, 0, 1);
 	FTransform tr;
 	tr.SetLocation(Playerhit.Location);
 	UGameplayStatics::SpawnEmitterAtLocation(OurCamera->GetWorld(), PShoot, tr, true);
+	FTransform tr2 = GetMesh()->GetSocketTransform("Muzzle_01");
+
+	FVector temp2 =  FVector(0, 80, 0);
+	FRotator rot = Startplayer.ToOrientationRotator();
+	
+	tr2.SetRotation(rot.Quaternion());
+	UParticleSystemComponent* particles = UGameplayStatics::SpawnEmitterAtLocation(OurCamera->GetWorld(), Pfire, tr2, true);
+	particles->SetRelativeRotation(rot);
 
 
 }

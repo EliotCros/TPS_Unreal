@@ -52,6 +52,9 @@ void ATargetManager::start(){
 	for (size_t i = 0; i < targetList.Num(); i++){
 		targetList[i]->raise();
 	}
+	for (size_t i = 0; i < civilList.Num(); i++) {
+		civilList[i]->raise();
+	}
 	active = true;
 }
 

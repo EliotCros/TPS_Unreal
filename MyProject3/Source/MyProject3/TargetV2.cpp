@@ -22,11 +22,11 @@ ATargetV2::ATargetV2()
 void ATargetV2::BeginPlay()
 {
 	Super::BeginPlay();
-	FVector Location = GetActorLocation();
 	FRotator rot = GetActorRotation();
 
-	startHeight = Location.Z;
-	startRot= rot.Roll;
+	startHeight = MeshComponent->GetRelativeTransform().GetLocation().Z;
+
+	startRot= MeshComponent->GetRelativeTransform().Rotator().Roll;
 
 
 
@@ -55,9 +55,12 @@ void ATargetV2::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (raising) {
+
 		FVector Location = MeshComponent->GetRelativeTransform().GetLocation();
+
 		Location.Z += RaisingSpeed * DeltaTime;
 		if (Location.Z > startHeight + targetHeight) {
+
 			raising = false;
 			Location.Z = startHeight + targetHeight;
 			if (onRail) {
@@ -69,7 +72,6 @@ void ATargetV2::Tick(float DeltaTime)
 		MeshComponent->SetRelativeLocation(Location);
 	}
 	if (lowering) {
-		;
 		FVector Location = MeshComponent->GetRelativeTransform().GetLocation();
 		Location.Z -= RaisingSpeed * DeltaTime;
 		if (Location.Z < startHeight) {

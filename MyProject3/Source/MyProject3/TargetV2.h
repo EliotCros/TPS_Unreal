@@ -52,6 +52,7 @@ public:
 	bool isDead = false;
 
 	//Raise
+	UPROPERTY(EditAnywhere)
 	bool raising = false;
 	bool lowering = false;
 	float startHeight;
